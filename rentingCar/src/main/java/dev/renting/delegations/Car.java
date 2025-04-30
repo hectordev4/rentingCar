@@ -9,7 +9,7 @@ import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbSortK
 public class Car {
     private String delegationId;
     private String operation;
-    private String make;
+    private String brand;
     private String model;
     private int year;
     private String color;
@@ -35,14 +35,11 @@ public class Car {
         this.operation = operation;
     }
 
-    @DynamoDbAttribute("make")
-    public String getMake() {
-        return make;
+    @DynamoDbAttribute("brand")
+    public String getBrand() {
+        return brand;
     }
-
-    public void setMake(String make) {
-        this.make = make;
-    }
+    public void setBrand(String brand) {this.brand = brand;}
 
     @DynamoDbAttribute("model")
     public String getModel() {

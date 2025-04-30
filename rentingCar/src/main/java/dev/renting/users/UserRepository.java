@@ -2,5 +2,8 @@
 package dev.renting.users;
 
 public interface UserRepository {
-    void saveUser(User user);
+
+    <T extends User> void save(T item);
+
+    <T extends Booking> void save (T item);
 }

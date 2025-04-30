@@ -3,20 +3,16 @@ package dev.renting.users;
 
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbAttribute;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
-import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey;
 
 @DynamoDbBean
-public class User {
-    private String id;
+public class User extends UserTableItem {
+    //private String id;
     private String username;
     private String email;
     private String fullName;
     private String phone;
 
-    // Getters and setters
-    @DynamoDbPartitionKey
-    public String getId() { return id; }
-    public void setId(String id) { this.id = id; }
+
 
     @DynamoDbAttribute("userName")
     public String getUsername() { return username; }

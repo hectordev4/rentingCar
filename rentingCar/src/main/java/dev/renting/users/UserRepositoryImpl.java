@@ -19,8 +19,12 @@ public class UserRepositoryImpl implements UserRepository {
                         TableSchema.fromBean(User.class));
     }
 
+
     @Override
-    public void saveUser(User user) {
-        userTable.putItem(user);
+    public <T extends User> void save(T item) {
+
+    }
+    @Override
+    public <T extends Booking> void save(T item) {
     }
 }
