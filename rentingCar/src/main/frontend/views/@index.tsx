@@ -1,8 +1,11 @@
 import { ViewConfig } from '@vaadin/hilla-file-router/types.js';
+import { banner } from '../themes/banner';
 
-export const config: ViewConfig = { menu: { order: 0, icon: 'line-awesome/svg/home-solid.svg' }, title: 'home' };
+export const config: ViewConfig = { menu: { order: 0, icon: 'line-awesome/svg/home-solid.svg' }, title: 'SUPREME RENTING' };
 
 export default function HomeView() {
+  console.log(banner); // Log the banner to the console
+
   return (
     <div className="flex flex-col h-full items-center justify-center p-l text-center box-border">
       <img style={{ width: '200px' }} src="images/empty-plant.png" />
