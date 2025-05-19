@@ -1,5 +1,5 @@
 import { ViewConfig } from '@vaadin/hilla-file-router/types.js';
-import {banner} from '@themes/carrenting/banner.tsx';
+import {banner} from 'Frontend/themes/carrenting/banner';
 
 export const config: ViewConfig = { menu: { order: 0, icon: 'line-awesome/svg/home-solid.svg' }, title: 'home' };
 
