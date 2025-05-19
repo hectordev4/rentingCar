@@ -17,18 +17,20 @@ export default function MainLayout() {
   const navigate = useNavigate();
   const location = useLocation();
 
+
   useEffect(() => {
     if (currentTitle) {
       documentTitleSignal.value = currentTitle;
     }
   }, [currentTitle]);
 
+
   return (
     <AppLayout primarySection="drawer">
       <div slot="drawer" className="flex flex-col justify-between h-full p-m">
         <header className="flex flex-col gap-m">
           <span>
-            <img src="icons/Logo.png" alt="Logo SUPREME RENTING" style={{ width: '200px' }} />
+            <img src="icons/Logo.png" alt="Logo SUPREME RENTING" style={{ width: '225px' }} />
           </span>
           <SideNav onNavigate={({ path }) => navigate(path!)} location={location}>
             {createMenuItems().map(({ to, title, icon }) => (
@@ -52,3 +54,4 @@ export default function MainLayout() {
     </AppLayout>
   );
 }
+
