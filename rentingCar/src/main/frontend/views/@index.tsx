@@ -7,15 +7,16 @@ export default function HomeView() {
     console.log(banner);
   return (
     <>
-    <div className="homeDiv">
+    <div className="homeDivTop">
+        <img style={{ width: '100vw', zIndex:'-1' }} src="images/trailRoad.svg" />
         <img style={{ width: '800px' }} src="icons/Logo.svg" />
-        <img style={{ width: '800px' }} src="images/trailRoad.svg" />
+
     </div>
-    <div className="homeDiv">
+    <div className="homeDivBottom">
       <div className="flex flex-row items-center justify-between gap-xl text-center">
-        <button className="homeButton">Button1</button>
-        <button className="homeButton">Button2</button>
-        <button className="homeButton">Button3</button>
+        <button className="homeDelegation">Button1</button>
+        <button className="homeCalendar">Button2</button>
+        <button className="homeBook">Button3</button>
       </div>
     </div>
     </>
