@@ -149,6 +149,8 @@ textarea {
 .background{
     zIndex: -1;
     display: contents;
+    width: 100%;
+    height: auto;
 }
 
 .homeDivTop{
