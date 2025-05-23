@@ -1,5 +1,8 @@
 import { ViewConfig } from '@vaadin/hilla-file-router/types.js';
 import {banner} from 'Frontend/themes/carrenting/banner';
+import { DatePicker} from '@vaadin/react-components';
+import {HorizontalLayout} from '@vaadin/react-components';
+import {DateContextProvider} from 'Frontend/DateContext';
 
 export const config: ViewConfig = { menu: { order: 0, icon: 'line-awesome/svg/home-solid.svg' }, title: 'Home' };
 
@@ -17,7 +20,24 @@ export default function HomeView() {
             <span>Delegation</span>
             <img style={{ width: '50px' }} src="icons/arrowDown.svg" />
         </button>
-        <button className="homeCalendar" />
+        <DateContextProvider>
+            <HorizontalLayout theme="spacing">
+              <DatePicker
+                label="Departure date"
+                max={returnDate.value}
+                onValueChanged={(event) => {
+                  departureDate.value = event.detail.value;
+                }}
+              />
+              <DatePicker
+                label="Return date"
+                min={departureDate.value}
+                onValueChanged={(event) => {
+                  returnDate.value = event.detail.value;
+                }}
+              />
+            </HorizontalLayout>
+        </DateContextProvider>
         <button className="homeBook">Book Now!</button>
       </div>
     </div>
