@@ -3,6 +3,8 @@ import { effect, signal } from '@vaadin/hilla-react-signals';
 import { AppLayout, DrawerToggle, Icon, SideNav, SideNavItem } from '@vaadin/react-components';
 import { Suspense, useEffect } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router';
+import { useState } from 'react';
+
 
 const documentTitleSignal = signal('');
 effect(() => {
@@ -18,11 +20,36 @@ export default function MainLayout() {
   const location = useLocation();
 
 
+    const [darkMode, setDarkMode] = useState(() =>
+        document.documentElement.getAttribute('theme') === 'dark'
+      );
+
+  useEffect(() => {
+      if (darkMode) {
+        document.documentElement.setAttribute('theme', 'dark');
+      } else {
+        document.documentElement.removeAttribute('theme');
+      }
+    }, [darkMode]);
+
+    const [partyMode, setPartyMode] = useState(() =>
+        document.documentElement.getAttribute('theme') === 'party'
+      );
+
+  useEffect(() => {
+        if (partyMode) {
+            document.documentElement.setAttribute('theme', 'party');
+        } else {
+            document.documentElement.removeAttribute('theme');
+        }
+        }, [partyMode]);
+
   useEffect(() => {
     if (currentTitle) {
       documentTitleSignal.value = currentTitle;
     }
   }, [currentTitle]);
+
 
 
   return (
@@ -43,10 +70,18 @@ export default function MainLayout() {
         </header>
       </div>
 
-      <DrawerToggle slot="navbar" aria-label="Menu toggle"></DrawerToggle>
-      <h1 slot="navbar" className="text-l m-0">
-        {documentTitleSignal}
-      </h1>
+      <div className="topBar">
+        <div className="topBarToggle">
+          <DrawerToggle slot="navbar" aria-label="Menu toggle"></DrawerToggle>
+          <h1 slot="navbar" className="text-l m-0">
+            {documentTitleSignal}
+          </h1>
+        </div>
+          <div className="topBarButtons">
+            <button className="toggleDarkLight" onClick={() => setDarkMode((prev) => !prev)} />
+            <button className="toggleParty" onClick={() => setPartyMode((prev) => !prev)} />
+          </div>
+      </div>
 
       <Suspense>
         <Outlet />

@@ -17,9 +17,7 @@ export default function HomeView() {
             <span>Delegation</span>
             <img style={{ width: '50px' }} src="icons/arrowDown.svg" />
         </button>
-        <button className="homeCalendar">
-            <img style={{ width: '120px' }} src="icons/calendar.svg" />
-        </button>
+        <button className="homeCalendar" />
         <button className="homeBook">Book Now!</button>
       </div>
     </div>

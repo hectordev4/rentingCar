@@ -112,10 +112,7 @@ select {
 
 // reset textarea style
 textarea {
-  // move the label to the top
   vertical-align: top;
-
-  // turn off scroll bars in IE unless needed
   overflow: auto;
 }
 
@@ -146,11 +143,60 @@ textarea {
   }
 }
 
+/* Estilos para el modo oscuro */
+html[theme~="dark"] {
+  --lumo-base-color: #18191a; /* Gris oscuro */
+  --lumo-primary-color: #ff9800; /* Naranja */
+  --lumo-body-text-color: #e0e0e0; /* Gris claro */
+  --lumo-header-text-color: #f0f0f0; /* Gris muy claro para encabezados en modo oscuro */
+  background-color: var(--lumo-base-color);
+  color: var(--lumo-body-text-color);
+}
+
+html[theme~="dark"] body {
+  background-color: var(--lumo-base-color);
+  color: var(--lumo-body-text-color);
+}
+
+html[theme~="dark"] h1,
+html[theme~="dark"] h2,
+html[theme~="dark"] h3,
+html[theme~="dark"] h4,
+html[theme~="dark"] h5,
+html[theme~="dark"] h6 {
+  color: var(--lumo-header-text-color);
+}
+
+html[theme~="dark"] a {
+  color: var(--lumo-primary-color);
+}
+
+/* Estilos para el modo party */
+html[theme~="party"] {
+  --lumo-base-color: #ffeb3b; /* Amarillo */
+  --lumo-primary-color: #f44336; /* Rojo */
+  --lumo-body-text-color: #000
+}
+
 .background{
     zIndex: -1;
     display: contents;
     width: 100%;
     height: auto;
+}
+.topBar{
+    display: flex;
+    justify-content: space-between;
+}
+.topBarToggle{
+    display: flex;
+    align-items: center;
+}
+.topBarButtons{
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-right: 20px;
 }
 
 .homeDivTop{
@@ -206,9 +252,11 @@ textarea {
 .homeCalendar{
     width: 128px;
     height: 128px;
+    border-radius: 20px;
     aspect-ratio: 1/1;
     fill: #000;
     filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.50));
+    background: url(src/main/resources/META-INF/resources/icons/calendar.svg) 0px 0px !important;
 }
 .homeBook{
     display: flex;
@@ -229,4 +277,9 @@ textarea {
     font-style: normal;
     font-weight: 400;
     line-height: normal;
+}
+
+.toggleDarkLight{
+    display: flex;
+    background: url(../frontend/images/sun.png);
 }
