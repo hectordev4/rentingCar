@@ -2,11 +2,12 @@ package dev.renting.delegations;
 
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey;
-import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbAttribute;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbSortKey;
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbAttribute;
 
 @DynamoDbBean
 public class Car {
+
     private String delegationId;
     private String operation;
     private String make;
@@ -15,8 +16,9 @@ public class Car {
     private String color;
     private boolean rented;
     private int price;
+    private String availableFrom;
+    private String availableTo;
 
-    // Partition key
     @DynamoDbPartitionKey
     public String getDelegationId() {
         return delegationId;
@@ -71,6 +73,7 @@ public class Car {
         this.color = color;
     }
 
+    @DynamoDbAttribute("rented")
     public boolean isRented() {
         return rented;
     }
@@ -79,6 +82,7 @@ public class Car {
         this.rented = rented;
     }
 
+    @DynamoDbAttribute("price")
     public int getPrice() {
         return price;
     }
@@ -87,7 +91,28 @@ public class Car {
         this.price = price;
     }
 
-    // Note: DynamoDB Enhanced Client does not natively support dynamic additional properties.
-    // If you need to store extra unknown attributes, consider using a Map<String, AttributeValue> field
-    // or a JSON string attribute to hold those extra properties.
+    // ✅ New: Available from date
+    @DynamoDbAttribute("availableFrom")
+    public String getAvailableFrom() {
+        return availableFrom;
+    }
+
+    public void setAvailableFrom(String availableFrom) {
+        this.availableFrom = availableFrom;
+    }
+
+    // ✅ New: Available to date
+    @DynamoDbAttribute("availableTo")
+    public String getAvailableTo() {
+        return availableTo;
+    }
+
+    public void setAvailableTo(String availableTo) {
+        this.availableTo = availableTo;
+    }
+
+    // ✅ Utility: isAvailable = not rented
+    public boolean isAvailable() {
+        return !rented;
+    }
 }

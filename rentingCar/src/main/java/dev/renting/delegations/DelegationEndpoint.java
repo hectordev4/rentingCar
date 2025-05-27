@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Endpoint
 @AnonymousAllowed
@@ -55,8 +56,28 @@ public class DelegationEndpoint {
 
     // List all delegations with operation = "profile"
     public List<Delegation> getAllProfileDelegations() {
-        // Adjust the repository call as needed for your DB/ORM
         return delegationRepository.listAllDelegations();
     }
 
+    public List<Car> getAvailableCars(String delegationId, String operation, String fromDate, String toDate) {
+        List<Car> cars = delegationRepository.listByPartitionKey(delegationId, Car.class);
+        List<Car> availableCars = new ArrayList<>();
+
+        for (Car car : cars) {
+            if (
+                    car != null &&
+                            car.getOperation() != null &&
+                            car.getAvailableFrom() != null &&
+                            car.getAvailableTo() != null &&
+                            car.isAvailable() &&
+                            car.getOperation().equals(operation) &&
+                            car.getAvailableFrom().compareTo(fromDate) <= 0 &&
+                            car.getAvailableTo().compareTo(toDate) >= 0
+            ) {
+                availableCars.add(car);
+            }
+        }
+
+        return availableCars;
+    }
 }

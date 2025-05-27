@@ -249,6 +249,28 @@ html[theme~="party"] {
     font-weight: 400;
     line-height: normal;
 }
+.delegation-dropdown{
+      position: absolute;
+      align-items: center;
+      top: 100%;
+      left: 0;
+      width: 250px;
+      background: white;
+      border: 1px solid #ccc;
+      z-index: 1000;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
+    }
+.delegation-dropdown li {
+  padding: 10px;
+  cursor: pointer;
+}
+.delegation-dropdown li:hover {
+  background-color: #f0f0f0;
+}
+
 .homeCalendar{
     background-image: url(../resources/icons/calendar.svg) 128px 128px !important;
     width: 128px;
