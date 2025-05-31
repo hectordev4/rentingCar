@@ -4,7 +4,6 @@ import { DelegationEndpoint } from 'Frontend/generated/endpoints';
 import DateRangePicker from 'Frontend/components/DateRangePicker';
 import { useDateContext } from 'Frontend/contexts/DateContext';
 
-
 export const config = {
   menu: { order: 0, icon: 'line-awesome/svg/home-solid.svg' },
   title: 'Home',
@@ -13,12 +12,15 @@ export const config = {
 export default function HomeView() {
   const { delegations, loading } = useDelegations();
   const [showDropdown, setShowDropdown] = useState(false);
-  const [selectedDelegation, setSelectedDelegation] = useState<{ delegationId: string; operation: string } | null>(null);
+  const [selectedDelegation, setSelectedDelegation] = useState<{
+    delegationId: string;
+    operation: string;
+  } | null>(null);
 
   const { startDate, endDate } = useDateContext();
 
-  const handleSelect = (delegationId: string, operation: string) => {
-    setSelectedDelegation({ delegationId, operation });
+  const handleSelect = (delegation: { delegationId: string; operation: string }) => {
+    setSelectedDelegation(delegation);
     setShowDropdown(false);
   };
 
@@ -59,7 +61,11 @@ export default function HomeView() {
             <button className="homeDelegation" onClick={() => setShowDropdown(!showDropdown)}>
               <span>
                 {selectedDelegation
-                  ? `${selectedDelegation.delegationId} - ${selectedDelegation.operation}`
+                  ? delegations.find(
+                      (d) =>
+                        d.delegationId === selectedDelegation.delegationId &&
+                        d.operation === selectedDelegation.operation
+                    )?.name ?? 'Delegation'
                   : 'Delegation'}
               </span>
               <img style={{ width: '50px' }} src="icons/arrowDown.svg" alt="Toggle Dropdown" />
@@ -67,14 +73,19 @@ export default function HomeView() {
 
             {showDropdown && !loading && (
               <ul className="delegation-dropdown">
-                {delegations.map((d) => (
-                  <li
-                    key={d.delegationId + d.operation}
-                    onClick={() => handleSelect(d.delegationId, d.operation)}
-                  >
-                    {d.name}
-                  </li>
-                ))}
+                {delegations
+                  .filter(
+                    (d): d is Delegation & { delegationId: string; operation: string } =>
+                      !!d.delegationId && !!d.operation
+                  )
+                  .map((d) => (
+                    <li
+                      key={d.delegationId + d.operation}
+                      onClick={() => handleSelect({ delegationId: d.delegationId, operation: d.operation })}
+                    >
+                      {d.name}
+                    </li>
+                  ))}
               </ul>
             )}
           </div>

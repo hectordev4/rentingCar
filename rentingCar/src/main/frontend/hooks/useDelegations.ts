@@ -8,9 +8,15 @@ export function useDelegations() {
 
   useEffect(() => {
     DelegationEndpoint.getAllProfileDelegations()
-      .then((data: Delegation[]) => setDelegations(data))
+      .then((data) => {
+        const safeData: Delegation[] = (data ?? []).filter(
+          (d): d is Delegation => d !== undefined
+        );
+        setDelegations(safeData);
+      })
       .finally(() => setLoading(false));
   }, []);
+
 
   return { delegations, loading };
 }

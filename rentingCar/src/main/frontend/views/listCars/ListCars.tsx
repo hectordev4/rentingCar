@@ -10,24 +10,27 @@ export const config: ViewConfig = {
   title: 'Book a car',
 };
 
-type UserRole = 'admin' | 'user';  // Define roles here
+type UserRole = 'admin' | 'user';
 
+// This is your main component
 export default function ListCars() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // You can get this from your auth system or context
-  // For demo, hardcoded here:
-  const userRole: UserRole = 'user'; // Change this to 'admin' to test admin view
+  // TODO: Replace this hardcoded role with your auth logic
+  const userRole: UserRole = 'user'; // or 'admin' for testing admin view
 
-  // Cars passed via navigation state, if any
+  // For users, cars can be passed via navigation state (filtered by delegation/date)
+  // Admin fetches all cars on mount
   const stateCars = location.state?.cars as Car[] | undefined;
 
   const [cars, setCars] = useState<Car[]>(stateCars ?? []);
   const [loading, setLoading] = useState(!stateCars);
 
   useEffect(() => {
-    if (!stateCars) {
+    if (userRole === 'admin') {
+      // Admin fetches ALL cars, ignoring navigation state
+      setLoading(true);
       DelegationEndpoint.getAllCars()
         .then((result) => {
           const safeCars = (result ?? []).filter(
@@ -44,15 +47,16 @@ export default function ListCars() {
         })
         .finally(() => setLoading(false));
     }
-  }, [stateCars]);
+  }, [userRole]);
 
+  // Booking handler
   const handleBook = async (car: Car) => {
-    const userId = "USER#001";
+    const userId = "USER#001"; // TODO: Get from auth/session
     try {
       const idHashBookingCar = await generateBookingHash({
         make: car.make ?? '',
         model: car.model ?? '',
-        userId
+        userId,
       });
       navigate(`/listCars/bookingCar/${idHashBookingCar}`, { state: { car } });
     } catch (error) {
@@ -89,7 +93,7 @@ export default function ListCars() {
     return <div>No cars available.</div>;
   }
 
-  // Admin view: show all cars + Edit/Delete buttons (example)
+  // Admin view: show all cars + Edit/Delete buttons
   if (userRole === 'admin') {
     return (
       <div style={{ padding: '2rem' }}>
@@ -144,7 +148,6 @@ export default function ListCars() {
               <div style={{ marginBottom: '1rem', color: car.rented ? '#d33' : '#090' }}>
                 {car.rented ? 'Rented' : 'Available'}
               </div>
-              {/* Example Admin Buttons */}
               <Button theme="secondary" style={{ marginBottom: '0.5rem', width: '100%' }} onClick={() => alert(`Edit ${car.make} ${car.model}`)}>
                 Edit
               </Button>
@@ -158,7 +161,7 @@ export default function ListCars() {
     );
   }
 
-  // User view: normal booking cards
+  // User view: normal booking cards, filtered cars passed via state
   return (
     <div
       style={{
@@ -200,9 +203,7 @@ export default function ListCars() {
                 (e.target as HTMLImageElement).src = 'https://placehold.co/300x180?text=Car+Not+Found';
               }}
             />
-            <h3>
-              {car.make} {car.model}
-            </h3>
+            <h3>{car.make} {car.model}</h3>
             <div style={{ marginBottom: '0.5rem', color: '#555' }}>
               Year: <strong>{car.year}</strong>
             </div>
@@ -224,8 +225,7 @@ export default function ListCars() {
               BOOK
             </Button>
           </div>
-        ))
-      }
+        ))}
     </div>
   );
 }

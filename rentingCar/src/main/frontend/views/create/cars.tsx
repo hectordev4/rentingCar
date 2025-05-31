@@ -21,7 +21,8 @@ const sampleCar: Car = {
   year: 2025,
   color: "Blue",
   rented: false,
-  price: 40000
+  price: 40000,
+  available: true,
 };
 
 export default function CarsView() {
