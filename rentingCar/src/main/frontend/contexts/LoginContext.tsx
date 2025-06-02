@@ -9,7 +9,7 @@ interface LoginContextValue {
 }
 
 
-const LoginContext = createContext<LoginContextValue>({
+export const LoginContext = createContext<LoginContextValue>({
   isLoggedIn: false,
   setIsLoggedIn: () => {},
   isAdmin: false,
@@ -32,4 +32,3 @@ export const LoginProvider: FC<LoginProviderProps> = ({ children }) => {
   );
 };
 
-export default LoginContext;

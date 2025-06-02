@@ -27,7 +27,8 @@ const sampleBooking: Booking = {
     year: 2025,
     color: "Blue",
     rented: false,
-    price: 40000
+    price: 40000,
+    available: true,
   },
   status: "ACTIVE",
   startDate: "2025-10-01",

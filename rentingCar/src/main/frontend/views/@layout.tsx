@@ -6,6 +6,7 @@ import { Outlet, useLocation, useNavigate } from 'react-router';
 
 import { DateContextProvider } from 'Frontend/contexts/DateContext';
 import { LoginProvider } from 'Frontend/contexts/LoginContext';
+import AuthControls from 'Frontend/components/AuthControls';
 
 const documentTitleSignal = signal('');
 effect(() => {
@@ -71,6 +72,9 @@ useEffect(() => {
             <div className="topBarButtons">
               <button className="toggleDarkLight" onClick={() => setDarkMode((prev) => !prev)} />
               <button className="toggleParty" onClick={() => setPartyMode((prev) => !prev)} />
+              <div className="topBarAuthControls">
+                <AuthControls />
+              </div>
             </div>
           </div>
 

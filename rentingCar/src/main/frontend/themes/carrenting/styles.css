@@ -292,15 +292,7 @@ html[theme~="party-mode"] button {
   background-color: #f0f0f0;
 }
 
-.homeCalendar{
-    background-image: url(../resources/icons/calendar.svg) 128px 128px !important;
-    width: 128px;
-    height: 128px;
-    border-radius: 20px;
-    aspect-ratio: 1/1;
-    fill: #000;
-    filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.50));
-}
+
 .homeBook{
     display: flex;
     width: 300px;
@@ -324,5 +316,5 @@ html[theme~="party-mode"] button {
 
 .toggleDarkLight{
     display: flex;
-    background: url(../frontend/images/sun.png);
+    background: url(../resources/icons/sun.svg);
 }

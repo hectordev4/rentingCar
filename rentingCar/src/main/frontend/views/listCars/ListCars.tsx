@@ -1,24 +1,24 @@
 import { ViewConfig } from '@vaadin/hilla-file-router/types.js';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { DelegationEndpoint } from 'Frontend/generated/endpoints';
 import Car from 'Frontend/generated/dev/renting/delegations/Car';
 import { Button } from '@vaadin/react-components/Button';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { LoginContext } from 'Frontend/contexts/LoginContext';
 
 export const config: ViewConfig = {
   menu: { order: 6, icon: 'line-awesome/svg/car-side-solid.svg' },
   title: 'Book a car',
 };
 
-type UserRole = 'admin' | 'user';
 
 // This is your main component
 export default function ListCars() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // TODO: Replace this hardcoded role with your auth logic
-  const userRole: UserRole = 'user'; // or 'admin' for testing admin view
+  const { isAdmin } = useContext(LoginContext);
+  const userRole = isAdmin ? 'admin' : 'user';
 
   // For users, cars can be passed via navigation state (filtered by delegation/date)
   // Admin fetches all cars on mount

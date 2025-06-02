@@ -3,6 +3,7 @@ import { useDelegations } from 'Frontend/hooks/useDelegations';
 import { DelegationEndpoint } from 'Frontend/generated/endpoints';
 import DateRangePicker from 'Frontend/components/DateRangePicker';
 import { useDateContext } from 'Frontend/contexts/DateContext';
+import Delegation from 'Frontend/generated/dev/renting/delegations/Delegation';
 
 export const config = {
   menu: { order: 0, icon: 'line-awesome/svg/home-solid.svg' },
