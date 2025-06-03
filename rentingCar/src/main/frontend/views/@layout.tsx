@@ -6,6 +6,7 @@ import { Outlet, useLocation, useNavigate } from 'react-router';
 
 import { DateContextProvider } from 'Frontend/contexts/DateContext';
 import { LoginProvider } from 'Frontend/contexts/LoginContext';
+import ThemeToggleButtons from 'Frontend/components/ThemeToggleButtons';
 import AuthControls from 'Frontend/components/AuthControls';
 
 const documentTitleSignal = signal('');
@@ -19,27 +20,6 @@ export default function MainLayout() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const [darkMode, setDarkMode] = useState(() =>
-    document.documentElement.getAttribute('theme') === 'dark'
-  );
-
-  const [partyMode, setPartyMode] = useState(() =>
-    document.documentElement.getAttribute('theme') === 'party'
-  );
-
-useEffect(() => {
-  if (partyMode) {
-    document.documentElement.setAttribute('theme', 'party');
-  } else if (darkMode) {
-    document.documentElement.setAttribute('theme', 'dark');
-  } else {
-    document.documentElement.removeAttribute('theme');
-  }
-
-  if (currentTitle) {
-    documentTitleSignal.value = currentTitle;
-  }
-}, [currentTitle, darkMode, partyMode]);
 
 
   return (
@@ -70,11 +50,8 @@ useEffect(() => {
               </h1>
             </div>
             <div className="topBarButtons">
-              <button className="toggleDarkLight" onClick={() => setDarkMode((prev) => !prev)} />
-              <button className="toggleParty" onClick={() => setPartyMode((prev) => !prev)} />
-              <div className="topBarAuthControls">
-                <AuthControls />
-              </div>
+              <ThemeToggleButtons />
+              <AuthControls />
             </div>
           </div>
 

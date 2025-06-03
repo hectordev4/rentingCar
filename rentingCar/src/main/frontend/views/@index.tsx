@@ -4,6 +4,8 @@ import { DelegationEndpoint } from 'Frontend/generated/endpoints';
 import DateRangePicker from 'Frontend/components/DateRangePicker';
 import { useDateContext } from 'Frontend/contexts/DateContext';
 import Delegation from 'Frontend/generated/dev/renting/delegations/Delegation';
+import DelegationSelector from 'Frontend/components/DelegationSelector';
+
 
 export const config = {
   menu: { order: 0, icon: 'line-awesome/svg/home-solid.svg' },
@@ -59,40 +61,16 @@ export default function HomeView() {
       <div className="homeDivBottom">
         <div className="homeDivSubBottom">
           <div style={{ position: 'relative' }}>
-            <button className="homeDelegation" onClick={() => setShowDropdown(!showDropdown)}>
-              <span>
-                {selectedDelegation
-                  ? delegations.find(
-                      (d) =>
-                        d.delegationId === selectedDelegation.delegationId &&
-                        d.operation === selectedDelegation.operation
-                    )?.name ?? 'Delegation'
-                  : 'Delegation'}
-              </span>
-              <img style={{ width: '50px' }} src="icons/arrowDown.svg" alt="Toggle Dropdown" />
-            </button>
-
-            {showDropdown && !loading && (
-              <ul className="delegation-dropdown">
-                {delegations
-                  .filter(
-                    (d): d is Delegation & { delegationId: string; operation: string } =>
-                      !!d.delegationId && !!d.operation
-                  )
-                  .map((d) => (
-                    <li
-                      key={d.delegationId + d.operation}
-                      onClick={() => handleSelect({ delegationId: d.delegationId, operation: d.operation })}
-                    >
-                      {d.name}
-                    </li>
-                  ))}
-              </ul>
-            )}
+            <DelegationSelector
+              delegations={delegations}
+              loading={loading}
+              showDropdown={showDropdown}
+              setShowDropdown={setShowDropdown}
+              selectedDelegation={selectedDelegation}
+              onSelect={handleSelect}
+            />
           </div>
-
           <DateRangePicker />
-
           <button className="homeBook" onClick={handleBookNow}>
             Book Now!
           </button>
