@@ -4,8 +4,7 @@ import { AppLayout, DrawerToggle, Icon, SideNav, SideNavItem } from '@vaadin/rea
 import { Suspense, useEffect, useState } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router';
 
-import { DateContextProvider } from 'Frontend/contexts/DateContext';
-import { LoginProvider } from 'Frontend/contexts/LoginContext';
+
 import ThemeToggleButtons from 'Frontend/components/ThemeToggleButtons';
 import AuthControls from 'Frontend/components/AuthControls';
 
@@ -23,8 +22,6 @@ export default function MainLayout() {
 
 
   return (
-    <LoginProvider>
-      <DateContextProvider>
         <AppLayout primarySection="drawer">
           <div slot="drawer" className="flex flex-col justify-between h-full p-m">
             <header className="flex flex-col gap-m">
@@ -59,7 +56,5 @@ export default function MainLayout() {
             <Outlet />
           </Suspense>
         </AppLayout>
-      </DateContextProvider>
-    </LoginProvider>
   );
 }

@@ -9,7 +9,7 @@ export const config: ViewConfig = {
   title: 'Bookings',
 };
 
-export default function Bookings() {
+export default function BookingsView() {
   const [bookings, setBookings] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 

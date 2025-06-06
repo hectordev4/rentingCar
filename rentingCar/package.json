@@ -3,6 +3,7 @@
   "license": "UNLICENSED",
   "type": "module",
   "dependencies": {
+    "@aws-sdk/client-cognito-identity-provider": "^3.825.0",
     "@polymer/polymer": "3.5.2",
     "@vaadin/bundles": "24.7.3",
     "@vaadin/common-frontend": "0.0.19",
@@ -29,7 +30,7 @@
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "react-router": "7.2.0",
-    "react-router-dom": "^7.5.3"
+    "react-router-dom": "^7.6.2"
   },
   "devDependencies": {
     "@babel/preset-react": "7.26.3",
@@ -125,7 +126,7 @@
       "workbox-core": "7.3.0",
       "workbox-precaching": "7.3.0"
     },
-    "hash": "679a51f61e71a9d6b1fd91da555e7a85f6c366653a6fbcfb842c16577071f50b"
+    "hash": "bd6aefc878c299348c8b970b89ba148b8c543d45b8c3353e6714a2756d91d19d"
   },
   "overrides": {
     "@vaadin/bundles": "$@vaadin/bundles",
@@ -165,6 +166,7 @@
     "@vaadin/vaadin-lumo-styles": "$@vaadin/vaadin-lumo-styles",
     "@vaadin/vaadin-material-styles": "$@vaadin/vaadin-material-styles",
     "react-router": "$react-router",
-    "react-router-dom": "$react-router-dom"
+    "react-router-dom": "$react-router-dom",
+    "@aws-sdk/client-cognito-identity-provider": "$@aws-sdk/client-cognito-identity-provider"
   }
 }
