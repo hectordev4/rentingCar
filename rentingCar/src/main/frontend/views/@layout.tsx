@@ -3,8 +3,8 @@ import { effect, signal } from '@vaadin/hilla-react-signals';
 import { AppLayout, DrawerToggle, Icon, SideNav, SideNavItem } from '@vaadin/react-components';
 import { Suspense, useEffect, useState } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router';
-
-
+import { DateContextProvider } from 'Frontend/contexts/DateContext';
+import { AuthProvider } from 'Frontend/contexts/AuthContext';
 import ThemeToggleButtons from 'Frontend/components/ThemeToggleButtons';
 import AuthControls from 'Frontend/components/AuthControls';
 
@@ -52,6 +52,7 @@ export default function MainLayout() {
             </div>
           </div>
 
+        /* This is where the main content of the application will be rendered */
           <Suspense>
             <Outlet />
           </Suspense>

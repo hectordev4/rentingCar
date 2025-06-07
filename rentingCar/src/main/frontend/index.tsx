@@ -1,21 +1,33 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+//Provider Imports
 import { DateContextProvider } from 'Frontend/contexts/DateContext';
 import { AuthProvider } from 'Frontend/contexts/AuthContext';
-import HomeView from './views/@index';
+//Layout Imports
 import MainLayout from './views/@layout';
+//View Imports
+import HomeView from './views/@index';
 import LoginView from './views/login';
 import BookingsView from './views/bookings';
 
+//Helper function to wrap elements with providers
+const withProviders = (element: React.ReactNode) => (
+  <AuthProvider>
+    <DateContextProvider>
+      {element}
+    </DateContextProvider>
+  </AuthProvider>
+);
+
 
 const router = createBrowserRouter([
-  { path: '/', element: <HomeView /> },
-  { path: '/home', element: <HomeView /> },
+  { path: '/', element: withProviders(<HomeView />) },
+  { path: '/home', element: withProviders(<HomeView />) },
+  { path: '/login', element: withProviders(<LoginView />) },
   {
-    element: <MainLayout />,
+    element: withProviders(<MainLayout />),
     children: [
-      { path: '/login', element: <LoginView /> },
       { path: '/bookings', element: <BookingsView /> },
     ],
   },
@@ -24,10 +36,6 @@ const router = createBrowserRouter([
 const root = ReactDOM.createRoot(document.getElementById('outlet')!);
 root.render(
   <React.StrictMode>
-    <AuthProvider>
-      <DateContextProvider>
-        <RouterProvider router={router} />
-      </DateContextProvider>
-    </AuthProvider>
+    <RouterProvider router={router} />
   </React.StrictMode>
 );

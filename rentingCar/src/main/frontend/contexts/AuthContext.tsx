@@ -1,23 +1,23 @@
 import React, { createContext, useState, FC, ReactNode, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button } from '@mui/material'; // Assuming Material UI
+import { signIn } from 'Frontend/middleware/AuthService';
 
 // --- AuthContextValue ---
 interface AuthContextValue {
   isLoggedIn: boolean;
   isAdmin: boolean;
-  login: () => void; // Renamed handleLogin for clarity
-  logout: () => void; // Renamed handleLogout for clarity
+  login: (username: string, password: string) => Promise<void>;
+  logout: () => void;
   isAuthenticated: () => boolean;
-  setIsLoggedIn: (loggedIn: boolean) => void; // Expose setter if other parts need to directly influence login state (less common)
-  setIsAdmin: (isAdmin: boolean) => void; // Expose setter if other parts need to directly influence admin state
+  setIsLoggedIn: (loggedIn: boolean) => void;
+  setIsAdmin: (isAdmin: boolean) => void;
 }
 
 // Initial default values for the context
 export const AuthContext = createContext<AuthContextValue>({
   isLoggedIn: false,
   isAdmin: false,
-  login: () => {},
+  login: async () => {},
   logout: () => {},
   isAuthenticated: () => false,
   setIsLoggedIn: () => {},
@@ -30,46 +30,54 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(false); // You'd set this based on actual admin check
-  const navigate = useNavigate();
+    const navigate = useNavigate();
 
-  // Effect to initialize isLoggedIn state on component mount
-  // or when relevant storage changes (e.g., token expiration)
+    //Initial state for authentication
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+
+    // Check authentication status on mount
   useEffect(() => {
-    // You might want a more sophisticated check here,
-    // e.g., decoding JWT, checking token expiration, etc.
     const token = sessionStorage.getItem('accessToken');
     const currentlyAuthenticated = !!token;
     setIsLoggedIn(currentlyAuthenticated);
-    // You'd also check for admin role here based on token claims or user info
-    // setIsAdmin(checkIfAdmin(token));
-  }, []); // Run once on mount
+  }, []);
 
-  const isAuthenticated = () => {
-    // This function can remain simple or grow more complex
-    // to include token expiry checks etc.
+    const isAuthenticated = () => {
     const accessToken = sessionStorage.getItem('accessToken');
     return !!accessToken;
   };
 
-  const login = () => {
-    // In a real app, this would involve API calls for authentication
-    // and storing tokens upon success.
-    // For now, it just navigates to the login page.
-    navigate('/login');
-  };
+//Calls the signIn function from AuthService to authenticate the user
+  const login = async (username: string, password: string): Promise<void> => {
+  try {
+    const response = await signIn(username, password);
+    const accessToken = response?.AuthenticationResult?.AccessToken;
+    const idToken = response?.AuthenticationResult?.IdToken;
+    if (accessToken && idToken) {
+      sessionStorage.setItem('accessToken', accessToken);
+      sessionStorage.setItem('idToken', idToken);
+      setIsLoggedIn(true);
+      navigate('/home');
+    } else {
+      throw new Error('Tokens not found in authentication response');
+    }
+  } catch (error) {
+    console.error('Login failed:', error);
+  }
+};
 
+    // Logs out the user by removing tokens from sessionStorage and updating state
   const logout = () => {
     sessionStorage.removeItem('idToken');
     sessionStorage.removeItem('accessToken');
     sessionStorage.removeItem('refreshToken');
-    setIsLoggedIn(false); // Update the state immediately
-    setIsAdmin(false); // Clear admin state
-    navigate('/home'); // Navigate to a public page
-    // window.location.reload(); // Only if a hard refresh is absolutely necessary
+    setIsLoggedIn(false);
+    setIsAdmin(false);
+    navigate('/home');
   };
 
+//Object that contains the context values
   const contextValue: AuthContextValue = {
     isLoggedIn,
     isAdmin,
@@ -80,6 +88,7 @@ export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
     setIsAdmin,
   };
 
+//Provider
   return (
     <AuthContext.Provider value={contextValue}>
       {children}

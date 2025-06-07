@@ -4,7 +4,7 @@ import { DelegationEndpoint } from 'Frontend/generated/endpoints';
 import Car from 'Frontend/generated/dev/renting/delegations/Car';
 import { Button } from '@vaadin/react-components/Button';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { LoginContext } from 'Frontend/contexts/LoginContext';
+import { AuthContext } from 'Frontend/contexts/AuthContext';
 
 export const config: ViewConfig = {
   menu: { order: 6, icon: 'line-awesome/svg/car-side-solid.svg' },
@@ -12,16 +12,15 @@ export const config: ViewConfig = {
 };
 
 
-// This is your main component
+
 export default function ListCars() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { isAdmin } = useContext(LoginContext);
+  const { isAdmin } = useContext(AuthContext);
   const userRole = isAdmin ? 'admin' : 'user';
 
-  // For users, cars can be passed via navigation state (filtered by delegation/date)
-  // Admin fetches all cars on mount
+
   const stateCars = location.state?.cars as Car[] | undefined;
 
   const [cars, setCars] = useState<Car[]>(stateCars ?? []);
@@ -29,7 +28,7 @@ export default function ListCars() {
 
   useEffect(() => {
     if (userRole === 'admin') {
-      // Admin fetches ALL cars, ignoring navigation state
+
       setLoading(true);
       DelegationEndpoint.getAllCars()
         .then((result) => {
@@ -49,9 +48,9 @@ export default function ListCars() {
     }
   }, [userRole]);
 
-  // Booking handler
+
   const handleBook = async (car: Car) => {
-    const userId = "USER#001"; // TODO: Get from auth/session
+    const userId = "USER#001";
     try {
       const idHashBookingCar = await generateBookingHash({
         make: car.make ?? '',
@@ -93,7 +92,7 @@ export default function ListCars() {
     return <div>No cars available.</div>;
   }
 
-  // Admin view: show all cars + Edit/Delete buttons
+  // Admin view
   if (userRole === 'admin') {
     return (
       <div style={{ padding: '2rem' }}>
@@ -161,7 +160,7 @@ export default function ListCars() {
     );
   }
 
-  // User view: normal booking cards, filtered cars passed via state
+  // User view
   return (
     <div
       style={{

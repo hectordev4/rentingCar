@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useDelegations } from 'Frontend/hooks/useDelegations';
 import { DelegationEndpoint } from 'Frontend/generated/endpoints';
 import DateRangePicker from 'Frontend/components/DateRangePicker';
@@ -20,13 +21,18 @@ export default function HomeView() {
     operation: string;
   } | null>(null);
 
+  const navigate = useNavigate();
+
   const { startDate, endDate } = useDateContext();
 
+
+    // Handle delegation selection
   const handleSelect = (delegation: { delegationId: string; operation: string }) => {
     setSelectedDelegation(delegation);
     setShowDropdown(false);
   };
 
+    // Handle booking action
   const handleBookNow = async () => {
     console.log('selectedDelegation:', selectedDelegation);
     console.log('startDate:', startDate);
@@ -45,7 +51,8 @@ export default function HomeView() {
         endDate
       );
       console.log('Available cars:', cars);
-      // TODO: handle/display available cars as needed
+      navigate ('/listCars')
+
     } catch (error) {
       console.error('Failed to load available cars:', error);
       alert('Failed to load available cars. Please try again.');
