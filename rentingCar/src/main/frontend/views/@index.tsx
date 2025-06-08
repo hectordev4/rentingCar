@@ -6,6 +6,7 @@ import DateRangePicker from 'Frontend/components/DateRangePicker';
 import { useDateContext } from 'Frontend/contexts/DateContext';
 import Delegation from 'Frontend/generated/dev/renting/delegations/Delegation';
 import DelegationSelector from 'Frontend/components/DelegationSelector';
+import { fetchAvailableCars } from 'Frontend/middleware/DelegationEndpoint';
 
 
 export const config = {
@@ -23,7 +24,7 @@ export default function HomeView() {
 
   const navigate = useNavigate();
 
-  const { startDate, endDate } = useDateContext();
+  const { selectedDates } = useDateContext();
 
 
     // Handle delegation selection
@@ -34,25 +35,18 @@ export default function HomeView() {
 
     // Handle booking action
   const handleBookNow = async () => {
-    console.log('selectedDelegation:', selectedDelegation);
-    console.log('startDate:', startDate);
-    console.log('endDate:', endDate);
-
-    if (!selectedDelegation || !startDate || !endDate) {
-      alert('Please select a delegation and both dates.');
+    if (!selectedDelegation || !selectedDates || selectedDates.length === 0) {
+      alert('Please select a delegation and at least one date.');
       return;
     }
 
     try {
-      const cars = await DelegationEndpoint.getAvailableCars(
+      const cars = await fetchAvailableCars(
         selectedDelegation.delegationId,
-        selectedDelegation.operation,
-        startDate,
-        endDate
+        selectedDates
       );
       console.log('Available cars:', cars);
-      navigate ('/listCars')
-
+      navigate('/listCars');
     } catch (error) {
       console.error('Failed to load available cars:', error);
       alert('Failed to load available cars. Please try again.');

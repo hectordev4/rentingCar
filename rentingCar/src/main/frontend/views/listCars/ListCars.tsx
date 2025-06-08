@@ -3,7 +3,8 @@ import React, { useEffect, useState, useContext } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { AuthContext } from 'Frontend/contexts/AuthContext';
 import { fetchAvailableCars, fetchAllCars, generateBookingHash } from 'Frontend/middleware/DelegationEndpoint';
-import CarCard from './CarCard';
+import Car from 'Frontend/generated/dev/renting/delegations/Car';
+import CarCard from 'Frontend/components/CarCard';
 
 export const config: ViewConfig = {
   menu: { order: 6, icon: 'line-awesome/svg/car-side-solid.svg' },
@@ -23,48 +24,60 @@ export default function ListCars() {
   const [cars, setCars] = useState<Car[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    async function loadCars() {
-      setLoading(true);
-      try {
-        let result: Car[] = [];
-        if (isAdmin) {
-          result = await fetchAllCars();
-        } else {
-          result = await fetchAvailableCars(delegationId, startDate, endDate);
-        }
-        setCars(
-          (result ?? []).filter(
-            (car): car is Car =>
-              !!car &&
-              typeof car.delegationId === 'string' &&
-              typeof car.operation === 'string'
-          )
-        );
-      } catch (error) {
-        console.error('Failed to fetch cars:', error);
-        setCars([]);
-      } finally {
-        setLoading(false);
-      }
-    }
-    loadCars();
-  }, [isAdmin, delegationId, startDate, endDate]);
-
-  const handleBook = async (car: Car) => {
-    const userId = "USER#001";
+useEffect(() => {
+  async function loadCars() {
+    setLoading(true);
     try {
-      const idHashBookingCar = await generateBookingHash({
-        manufacturer: car.manufacturer ?? '',
-        model: car.model ?? '',
-        numberPlate: car.numberPlate ?? '',
-        userId,
-      });
-      navigate(`/listCars/bookingCar/${idHashBookingCar}`, { state: { car } });
+      let result: Car[] = [];
+      if (isAdmin) {
+        result = await fetchAllCars();
+      } else {
+        const getDatesArray = (start: string, end: string) => {
+          const dates: string[] = [];
+          let current = new Date(start);
+          const last = new Date(end);
+          while (current <= last) {
+            const mm = String(current.getMonth() + 1).padStart(2, '0');
+            const dd = String(current.getDate()).padStart(2, '0');
+            dates.push(`${mm}-${dd}`);
+            current.setDate(current.getDate() + 1);
+          }
+          return dates;
+        };
+        const selectedDates = getDatesArray(startDate, endDate);
+        result = await fetchAvailableCars(delegationId, selectedDates);
+      } // <-- This closing brace was missing
+      setCars(
+        (result ?? []).filter(
+          (car): car is Car => !!car
+        )
+      );
     } catch (error) {
-      console.error('Error generating booking hash:', error);
-      alert('Failed to start booking process');
+      console.error('Failed to fetch cars:', error);
+      setCars([]);
+    } finally {
+      setLoading(false);
     }
+  }
+  loadCars();
+}, [isAdmin, delegationId, startDate, endDate]);
+
+  const handleBook = (car: Car) => {
+    (async () => {
+      const userId = "USER#001";
+      try {
+        const idHashBookingCar = await generateBookingHash({
+          manufacturer: car.manufacturer ?? '',
+          model: car.model ?? '',
+          numberPlate: car.numberPlate ?? '',
+          userId,
+        });
+        navigate(`/listCars/bookingCar/${idHashBookingCar}`, { state: { car } });
+      } catch (error) {
+        console.error('Error generating booking hash:', error);
+        alert('Failed to start booking process');
+      }
+    })();
   };
 
   function isCarWithManufacturerAndModel(car: Car): car is Car & { manufacturer: string; model: string } {
@@ -78,6 +91,15 @@ export default function ListCars() {
   if (cars.length === 0) {
     return <div>No cars available.</div>;
   }
+  function isValidCar(car: Car): car is Car & { manufacturer: string; model: string; delegationId: string; year: number } {
+    return (
+      typeof car.manufacturer === 'string' &&
+      typeof car.model === 'string' &&
+      typeof car.delegationId === 'string' &&
+      typeof car.year === 'number'
+    );
+  }
+
 
   return (
     <div style={{ padding: '2rem' }}>
@@ -91,17 +113,17 @@ export default function ListCars() {
         }}
       >
         {cars
-          .filter(isCarWithManufacturerAndModel)
-          .map(car => (
-            <CarCard
-              key={`${car.delegationId}-${car.operation}`}
-              car={car}
-              isAdmin={isAdmin}
-              onBook={handleBook}
-              onEdit={(car) => alert(`Edit ${car.manufacturer} ${car.model}`)}
-              onDelete={(car) => alert(`Delete ${car.manufacturer} ${car.model}`)}
-            />
-          ))}
+            .filter(isValidCar)
+            .map(car => (
+              <CarCard
+                key={`${car.delegationId}-${car.operation ?? ''}`}
+                car={car}
+                isAdmin={isAdmin}
+                onBook={handleBook}
+                onEdit={(car) => alert(`Edit ${car.manufacturer} ${car.model}`)}
+                onDelete={(car) => alert(`Delete ${car.manufacturer} ${car.model}`)}
+              />
+            ))}
       </div>
     </div>
   );

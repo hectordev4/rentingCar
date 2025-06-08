@@ -21,7 +21,6 @@ const sampleBooking: Booking = {
     numberPlate: "ABC-1234",
     year: 2025,
     color: "Blue",
-    rented: false,
     price: 40000,
   },
   status: "ACTIVE",

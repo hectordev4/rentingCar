@@ -15,16 +15,17 @@ export async function saveDelegation(delegation: Delegation): Promise<void> {
 
 // Fetch all cars for admin view
 export async function fetchAllCars(): Promise<Car[]> {
-  return await DelegationEndpoint.getAllCars();
+  const result = await DelegationEndpoint.getAllCars();
+  return (result ?? []).filter((car): car is Car => !!car);
 }
 
 // Fetch available cars for user view
 export async function fetchAvailableCars(
   delegationId: string,
-  startDate: string,
-  endDate: string
+  dates: string[]
 ): Promise<Car[]> {
-  return await DelegationEndpoint.getAvailableCars(delegationId, startDate, endDate);
+  const result = await DelegationEndpoint.getAvailableCars(delegationId, dates);
+  return (result ?? []).filter((car): car is Car => !!car);
 }
 
 // Hash generation for booking

@@ -59,15 +59,32 @@ public class DelegationEndpoint {
         return delegationRepository.listAllDelegations();
     }
 
+    // Helper method to generate date strings range
+    private List<String> getDateRangeStrings(String start, String end) {
+        List<String> dates = new ArrayList<>();
+        // If you want to avoid LocalDate, you need to implement your own date increment logic or use a library.
+        // Otherwise, you can keep LocalDate just for this helper.
+        return dates;
+    }
+
     // Get available cars by delegationId and date
-    public List<Car> getAvailableCars(String delegationId, String date) {
+    public List<Car> getAvailableCars(String delegationId, List<String> dates) {
         List<Car> cars = delegationRepository.listByPartitionKey(delegationId, Car.class);
         List<Car> availableCars = new ArrayList<>();
         for (Car car : cars) {
             String sortKey = String.format("car#%d#%s#calendar", car.getYear(), car.getNumberPlate());
             Calendar calendar = delegationRepository.get(delegationId, sortKey, Calendar.class);
-            if (calendar != null && calendar.getDates() != null && Boolean.TRUE.equals(calendar.getDates().get(date))) {
-                availableCars.add(car);
+            if (calendar != null && calendar.getDates() != null) {
+                boolean allAvailable = true;
+                for (String dateStr : dates) {
+                    if (!Boolean.TRUE.equals(calendar.getDates().get(dateStr))) {
+                        allAvailable = false;
+                        break;
+                    }
+                }
+                if (allAvailable) {
+                    availableCars.add(car);
+                }
             }
         }
         return availableCars;

@@ -1,5 +1,3 @@
-// src/main/frontend/components/CarCard.tsx
-
 import React from 'react';
 import { Button } from '@vaadin/react-components/Button';
 

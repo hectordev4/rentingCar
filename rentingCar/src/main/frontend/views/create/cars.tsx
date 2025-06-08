@@ -1,4 +1,5 @@
 import { ViewConfig } from '@vaadin/hilla-file-router/types.js';
+import Car from 'Frontend/generated/dev/renting/delegations/Car';
 import { saveCar } from 'Frontend/middleware/DelegationEndpoint';
 import { Button } from '@vaadin/react-components/Button';
 
@@ -21,7 +22,6 @@ const sampleCar: Car = {
   numberPlate: "ABC-1234",
   year: 2025,
   color: "Blue",
-  rented: false,
   price: 40000,
 };
 
