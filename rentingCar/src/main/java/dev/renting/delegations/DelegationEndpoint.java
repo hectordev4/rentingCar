@@ -59,25 +59,17 @@ public class DelegationEndpoint {
         return delegationRepository.listAllDelegations();
     }
 
-    public List<Car> getAvailableCars(String delegationId, String operation, String fromDate, String toDate) {
+    // Get available cars by delegationId and date
+    public List<Car> getAvailableCarsByDate(String delegationId, String date) {
         List<Car> cars = delegationRepository.listByPartitionKey(delegationId, Car.class);
         List<Car> availableCars = new ArrayList<>();
-
         for (Car car : cars) {
-            if (
-                    car != null &&
-                            car.getOperation() != null &&
-                            car.getAvailableFrom() != null &&
-                            car.getAvailableTo() != null &&
-                            car.isAvailable() &&
-                            car.getOperation().equals(operation) &&
-                            car.getAvailableFrom().compareTo(fromDate) <= 0 &&
-                            car.getAvailableTo().compareTo(toDate) >= 0
-            ) {
+            String sortKey = String.format("car#%d#%s#calendar", car.getYear(), car.getNumberPlate());
+            Calendar calendar = delegationRepository.get(delegationId, sortKey, Calendar.class);
+            if (calendar != null && calendar.getDates() != null && Boolean.TRUE.equals(calendar.getDates().get(date))) {
                 availableCars.add(car);
             }
         }
-
         return availableCars;
     }
 }

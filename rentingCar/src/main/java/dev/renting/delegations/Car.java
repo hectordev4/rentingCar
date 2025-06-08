@@ -10,14 +10,13 @@ public class Car {
 
     private String delegationId;
     private String operation;
-    private String make;
+    private String manufacturer;
     private String model;
+    private String numberPlate;
     private int year;
     private String color;
-    private boolean rented;
     private int price;
-    private String availableFrom;
-    private String availableTo;
+
 
     @DynamoDbPartitionKey
     public String getDelegationId() {
@@ -37,14 +36,12 @@ public class Car {
         this.operation = operation;
     }
 
-    @DynamoDbAttribute("make")
-    public String getMake() {
-        return make;
+    @DynamoDbAttribute("manufacturer")
+    public String getManufacturer() {
+        return manufacturer;
     }
 
-    public void setMake(String make) {
-        this.make = make;
-    }
+    public void setManufacturer(String manufacturer) { this.manufacturer = manufacturer; }
 
     @DynamoDbAttribute("model")
     public String getModel() {
@@ -53,6 +50,14 @@ public class Car {
 
     public void setModel(String model) {
         this.model = model;
+    }
+
+    @DynamoDbAttribute("numberPlate")
+    public String getNumberPlate() {
+        return numberPlate;
+    }
+    public void setNumberPlate(String numberPlate) {
+        this.numberPlate = numberPlate;
     }
 
     @DynamoDbAttribute("year")
@@ -73,15 +78,6 @@ public class Car {
         this.color = color;
     }
 
-    @DynamoDbAttribute("rented")
-    public boolean isRented() {
-        return rented;
-    }
-
-    public void setRented(boolean rented) {
-        this.rented = rented;
-    }
-
     @DynamoDbAttribute("price")
     public int getPrice() {
         return price;
@@ -91,28 +87,5 @@ public class Car {
         this.price = price;
     }
 
-    // ✅ New: Available from date
-    @DynamoDbAttribute("availableFrom")
-    public String getAvailableFrom() {
-        return availableFrom;
-    }
 
-    public void setAvailableFrom(String availableFrom) {
-        this.availableFrom = availableFrom;
-    }
-
-    // ✅ New: Available to date
-    @DynamoDbAttribute("availableTo")
-    public String getAvailableTo() {
-        return availableTo;
-    }
-
-    public void setAvailableTo(String availableTo) {
-        this.availableTo = availableTo;
-    }
-
-    // ✅ Utility: isAvailable = not rented
-    public boolean isAvailable() {
-        return !rented;
-    }
 }
