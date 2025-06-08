@@ -1,7 +1,7 @@
-import { DelegationEndpoint } from 'Frontend/generated/endpoints';
 import { ViewConfig } from '@vaadin/hilla-file-router/types.js';
+import { saveCar } from 'Frontend/middleware/DelegationEndpoint';
 import { Button } from '@vaadin/react-components/Button';
-import Car from 'Frontend/generated/dev/renting/delegations/Car';
+
 
 
 export const config: ViewConfig = {
@@ -16,19 +16,19 @@ export const config: ViewConfig = {
 const sampleCar: Car = {
   delegationId: "DELEG#001",
   operation: "car#2025#002",
-  make: "Toyota",
+  manufacturer: "Toyota",
   model: "Camry",
+  numberPlate: "ABC-1234",
   year: 2025,
   color: "Blue",
   rented: false,
   price: 40000,
-  available: true,
 };
 
 export default function CarsView() {
   const handleSaveCar = async () => {
     try {
-        await DelegationEndpoint.saveCar(sampleCar);
+      await saveCar(sampleCar);
       alert('Car saved successfully!');
     } catch (error) {
       console.error('Error saving car:', error);

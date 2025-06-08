@@ -1,60 +1,63 @@
 import { ViewConfig } from '@vaadin/hilla-file-router/types.js';
 import React, { useEffect, useState, useContext } from 'react';
-import { DelegationEndpoint } from 'Frontend/generated/endpoints';
-import Car from 'Frontend/generated/dev/renting/delegations/Car';
-import { Button } from '@vaadin/react-components/Button';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { AuthContext } from 'Frontend/contexts/AuthContext';
+import { fetchAvailableCars, fetchAllCars, generateBookingHash } from 'Frontend/middleware/DelegationEndpoint';
+import CarCard from './CarCard';
 
 export const config: ViewConfig = {
   menu: { order: 6, icon: 'line-awesome/svg/car-side-solid.svg' },
   title: 'Book a car',
 };
 
-
-
 export default function ListCars() {
   const navigate = useNavigate();
   const location = useLocation();
-
   const { isAdmin } = useContext(AuthContext);
-  const userRole = isAdmin ? 'admin' : 'user';
 
+  // For user: get delegationId, startDate, endDate from location.state or defaults
+  const delegationId = location.state?.delegationId ?? 'DELEG#001';
+  const startDate = location.state?.startDate ?? new Date().toISOString().split('T')[0];
+  const endDate = location.state?.endDate ?? new Date(Date.now() + 86400000).toISOString().split('T')[0];
 
-  const stateCars = location.state?.cars as Car[] | undefined;
-
-  const [cars, setCars] = useState<Car[]>(stateCars ?? []);
-  const [loading, setLoading] = useState(!stateCars);
+  const [cars, setCars] = useState<Car[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (userRole === 'admin') {
-
+    async function loadCars() {
       setLoading(true);
-      DelegationEndpoint.getAllCars()
-        .then((result) => {
-          const safeCars = (result ?? []).filter(
+      try {
+        let result: Car[] = [];
+        if (isAdmin) {
+          result = await fetchAllCars();
+        } else {
+          result = await fetchAvailableCars(delegationId, startDate, endDate);
+        }
+        setCars(
+          (result ?? []).filter(
             (car): car is Car =>
               !!car &&
               typeof car.delegationId === 'string' &&
               typeof car.operation === 'string'
-          );
-          setCars(safeCars);
-        })
-        .catch((error) => {
-          console.error('Failed to fetch cars:', error);
-          setCars([]);
-        })
-        .finally(() => setLoading(false));
+          )
+        );
+      } catch (error) {
+        console.error('Failed to fetch cars:', error);
+        setCars([]);
+      } finally {
+        setLoading(false);
+      }
     }
-  }, [userRole]);
-
+    loadCars();
+  }, [isAdmin, delegationId, startDate, endDate]);
 
   const handleBook = async (car: Car) => {
     const userId = "USER#001";
     try {
       const idHashBookingCar = await generateBookingHash({
-        make: car.make ?? '',
+        manufacturer: car.manufacturer ?? '',
         model: car.model ?? '',
+        numberPlate: car.numberPlate ?? '',
         userId,
       });
       navigate(`/listCars/bookingCar/${idHashBookingCar}`, { state: { car } });
@@ -64,24 +67,8 @@ export default function ListCars() {
     }
   };
 
-  async function generateBookingHash(data: {
-    make: string;
-    model: string;
-    userId: string;
-  }): Promise<string> {
-    const encoder = new TextEncoder();
-    const dateString = new Date().toISOString().split('T')[0];
-    const stringToHash = `${data.make}-${data.model}-${dateString}-${data.userId}`;
-    const hashBuffer = await crypto.subtle.digest(
-      'SHA-256',
-      encoder.encode(stringToHash)
-    );
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
-    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-  }
-
-  function isCarWithMakeAndModel(car: Car): car is Car & { make: string; model: string } {
-    return typeof car.make === 'string' && typeof car.model === 'string';
+  function isCarWithManufacturerAndModel(car: Car): car is Car & { manufacturer: string; model: string } {
+    return typeof car.manufacturer === 'string' && typeof car.model === 'string';
   }
 
   if (loading) {
@@ -92,139 +79,30 @@ export default function ListCars() {
     return <div>No cars available.</div>;
   }
 
-  // Admin view
-  if (userRole === 'admin') {
-    return (
-      <div style={{ padding: '2rem' }}>
-        <h2>Admin Car Management</h2>
-        <div
-          style={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            gap: '2rem',
-            justifyContent: 'center',
-          }}
-        >
-          {cars.filter(isCarWithMakeAndModel).map(car => (
-            <div
-              key={`${car.delegationId}-${car.operation}`}
-              style={{
-                border: '1px solid #ddd',
-                borderRadius: '12px',
-                width: '320px',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                padding: '1.5rem',
-                background: '#fff'
-              }}
-            >
-              <img
-                src={`https://cdn.imagin.studio/getimage?customer=img&make=${encodeURIComponent(car.make)}&modelFamily=${encodeURIComponent(car.model.split(' ')[0])}&zoomType=fullscreen`}
-                alt={`${car.make} ${car.model}`}
-                style={{
-                  width: '100%',
-                  height: '180px',
-                  objectFit: 'cover',
-                  borderRadius: '8px',
-                  marginBottom: '1rem'
-                }}
-                onError={(e) => {
-                  (e.target as HTMLImageElement).src = 'https://placehold.co/300x180?text=Car+Not+Found';
-                }}
-              />
-              <h3>{car.make} {car.model}</h3>
-              <div style={{ marginBottom: '0.5rem', color: '#555' }}>
-                Year: <strong>{car.year}</strong>
-              </div>
-              <div style={{ marginBottom: '0.5rem', color: '#555' }}>
-                Color: <strong>{car.color}</strong>
-              </div>
-              <div style={{ marginBottom: '0.5rem', color: '#555' }}>
-                Price: <strong>{car.price} €</strong>
-              </div>
-              <div style={{ marginBottom: '1rem', color: car.rented ? '#d33' : '#090' }}>
-                {car.rented ? 'Rented' : 'Available'}
-              </div>
-              <Button theme="secondary" style={{ marginBottom: '0.5rem', width: '100%' }} onClick={() => alert(`Edit ${car.make} ${car.model}`)}>
-                Edit
-              </Button>
-              <Button theme="error" style={{ width: '100%' }} onClick={() => alert(`Delete ${car.make} ${car.model}`)}>
-                Delete
-              </Button>
-            </div>
-          ))}
-        </div>
-      </div>
-    );
-  }
-
-  // User view
   return (
-    <div
-      style={{
-        display: 'flex',
-        flexWrap: 'wrap',
-        gap: '2rem',
-        justifyContent: 'center',
-        padding: '2rem'
-      }}
-    >
-      {cars
-        .filter(isCarWithMakeAndModel)
-        .map(car => (
-          <div
-            key={`${car.delegationId}-${car.operation}`}
-            style={{
-              border: '1px solid #ddd',
-              borderRadius: '12px',
-              width: '320px',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              padding: '1.5rem',
-              background: '#fff'
-            }}
-          >
-            <img
-              src={`https://cdn.imagin.studio/getimage?customer=img&make=${encodeURIComponent(car.make)}&modelFamily=${encodeURIComponent(car.model.split(' ')[0])}&zoomType=fullscreen`}
-              alt={`${car.make} ${car.model}`}
-              style={{
-                width: '100%',
-                height: '180px',
-                objectFit: 'cover',
-                borderRadius: '8px',
-                marginBottom: '1rem'
-              }}
-              onError={(e) => {
-                (e.target as HTMLImageElement).src = 'https://placehold.co/300x180?text=Car+Not+Found';
-              }}
+    <div style={{ padding: '2rem' }}>
+      {isAdmin && <h2>Admin Car Management</h2>}
+      <div
+        style={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          gap: '2rem',
+          justifyContent: 'center',
+        }}
+      >
+        {cars
+          .filter(isCarWithManufacturerAndModel)
+          .map(car => (
+            <CarCard
+              key={`${car.delegationId}-${car.operation}`}
+              car={car}
+              isAdmin={isAdmin}
+              onBook={handleBook}
+              onEdit={(car) => alert(`Edit ${car.manufacturer} ${car.model}`)}
+              onDelete={(car) => alert(`Delete ${car.manufacturer} ${car.model}`)}
             />
-            <h3>{car.make} {car.model}</h3>
-            <div style={{ marginBottom: '0.5rem', color: '#555' }}>
-              Year: <strong>{car.year}</strong>
-            </div>
-            <div style={{ marginBottom: '0.5rem', color: '#555' }}>
-              Color: <strong>{car.color}</strong>
-            </div>
-            <div style={{ marginBottom: '0.5rem', color: '#555' }}>
-              Price: <strong>{car.price} €</strong>
-            </div>
-            <div style={{ marginBottom: '1rem', color: car.rented ? '#d33' : '#090' }}>
-              {car.rented ? 'Rented' : 'Available'}
-            </div>
-            <Button
-              theme="primary"
-              disabled={car.rented}
-              onClick={() => handleBook(car)}
-              style={{ width: '100%' }}
-            >
-              BOOK
-            </Button>
-          </div>
-        ))}
+          ))}
+      </div>
     </div>
   );
 }

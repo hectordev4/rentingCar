@@ -60,7 +60,7 @@ public class DelegationEndpoint {
     }
 
     // Get available cars by delegationId and date
-    public List<Car> getAvailableCarsByDate(String delegationId, String date) {
+    public List<Car> getAvailableCars(String delegationId, String date) {
         List<Car> cars = delegationRepository.listByPartitionKey(delegationId, Car.class);
         List<Car> availableCars = new ArrayList<>();
         for (Car car : cars) {

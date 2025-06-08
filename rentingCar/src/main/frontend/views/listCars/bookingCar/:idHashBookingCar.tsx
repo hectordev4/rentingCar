@@ -119,7 +119,9 @@ export default function BookingCar() {
         <h2 className="text-2xl mb-m text-green-700">Booking Confirmed!</h2>
         <div className="mb-m">
           <div><strong>Booking ID:</strong> {idHashBookingCar}</div>
-          <div><strong>Car:</strong> {car?.model} ({car?.make})</div>
+          <div><strong>Car:</strong> {car?.model} ({car?.manufacturer})</div>
+          <div><strong>Number Plate:</strong> {car?.numberPlate}</div>
+          <div><strong>Pickup Location:</strong> {formData.pickupDelegationId?.name}</div>
           <div><strong>From:</strong> {formData.startDate}</div>
           <div><strong>To:</strong> {formData.endDate}</div>
           <div><strong>Total Paid:</strong> {totalToPayment} €</div>

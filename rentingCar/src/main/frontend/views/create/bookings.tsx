@@ -1,20 +1,14 @@
 import { ViewConfig } from '@vaadin/hilla-file-router/types.js';
-import { UserEndpoint } from 'Frontend/generated/endpoints';
 import { Button } from '@vaadin/react-components/Button';
 import Booking from 'Frontend/generated/dev/renting/users/Booking';
-import Car from 'Frontend/generated/dev/renting/delegations/Car';
-import Delegation from 'Frontend/generated/dev/renting/delegations/Delegation';
-
+import { saveBooking } from 'Frontend/middleware/UserEndpoint';
 
 export const config: ViewConfig = {
   menu: {
     title: '\u2003Create Booking',
-    order: 4, // order within the Create submenu
-   // icon: 'line-awesome/svg/list-ol-solid.svg',
+    order: 4,
   },
-
 };
-
 
 const sampleBooking: Booking = {
   userId: "USER#001",
@@ -22,13 +16,13 @@ const sampleBooking: Booking = {
   car: {
     delegationId: "DELEG#001",
     operation: "car#2025#001",
-    make: "Toyota",
+    manufacturer: "Toyota",
     model: "Camry",
+    numberPlate: "ABC-1234",
     year: 2025,
     color: "Blue",
     rented: false,
     price: 40000,
-    available: true,
   },
   status: "ACTIVE",
   startDate: "2025-10-01",
@@ -61,19 +55,18 @@ const sampleBooking: Booking = {
 export default function BookingsView() {
   const handleSaveBooking = async () => {
     try {
-      await UserEndpoint.saveBooking(sampleBooking);
+      await saveBooking(sampleBooking);
       alert('Booking saved successfully!');
     } catch (error) {
       console.error('Error saving booking:', error);
-      alert('Failed to save user');
+      alert('Failed to save booking');
     }
   };
 
   return (
     <div className="flex flex-col h-full items-center justify-center p-l text-center box-border">
-      <img style={{ width: '200px' }} src="images/empty-plant.png" />
+      <img style={{ width: '200px' }} src="images/empty-plant.png" alt="Empty" />
       <h2>Booking Management</h2>
-
       <div className="card p-m">
         <pre className="text-left">
           {JSON.stringify(sampleBooking, null, 2)}
@@ -82,10 +75,7 @@ export default function BookingsView() {
           Save Booking
         </Button>
       </div>
-
       <p>Manage user bookings and dates</p>
     </div>
   );
 }
-
-
