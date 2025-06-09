@@ -32,23 +32,29 @@ interface AuthProviderProps {
 export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
     const navigate = useNavigate();
 
-    //Initial state for authentication
+  //Initial state for authentication
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
 
-    // Check authentication status on mount
+  // Check authentication status on mount
   useEffect(() => {
-    const token = sessionStorage.getItem('accessToken');
-    const currentlyAuthenticated = !!token;
-    setIsLoggedIn(currentlyAuthenticated);
+    const syncAuthState = () => {
+      const token = sessionStorage.getItem('accessToken');
+      setIsLoggedIn(!!token);
+    };
+
+    // Sync on mount
+    syncAuthState();
+
+    // Sync when sessionStorage changes (e.g., in another tab)
+    window.addEventListener('storage', syncAuthState);
+
+    return () => {
+      window.removeEventListener('storage', syncAuthState);
+    };
   }, []);
 
-    const isAuthenticated = () => {
-    const accessToken = sessionStorage.getItem('accessToken');
-    return !!accessToken;
-  };
-
-//Calls the signIn function from AuthService to authenticate the user
+  //Calls the signIn function from AuthService to authenticate the user
   const login = async (username: string, password: string): Promise<void> => {
   try {
     const response = await signIn(username, password);
@@ -77,7 +83,10 @@ export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
     navigate('/home');
   };
 
-//Object that contains the context values
+  // Checks if the user is authenticated by verifying the presence of an access token
+  const isAuthenticated = () => !!sessionStorage.getItem('accessToken');
+
+  //Object that contains the context values
   const contextValue: AuthContextValue = {
     isLoggedIn,
     isAdmin,

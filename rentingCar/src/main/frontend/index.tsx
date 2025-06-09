@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import './vaadin-hmr-fix';
 import 'Frontend/themes/carrenting/styles.css';
 //Provider Imports
 import { DateContextProvider } from 'Frontend/contexts/DateContext';

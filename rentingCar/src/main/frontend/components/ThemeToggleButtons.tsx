@@ -14,14 +14,14 @@ export default function ThemeToggleButtons() {
     } else if (darkMode) {
       document.documentElement.setAttribute('theme', 'dark');
     } else {
-      document.documentElement.removeAttribute('theme');
+      document.documentElement.setAttribute('theme', 'light');
     }
   }, [darkMode, partyMode]);
 
   return (
     <>
       <button
-        className={`toggleDarkLight${!darkMode && !partyMode ? ' light' : ''}`}
+        className={`toggleDarkLight${!darkMode ? ' light' : ''}`}
         onClick={() => setDarkMode((prev) => !prev)}
       />
       <button className="toggleParty" onClick={() => setPartyMode((prev) => !prev)} />
