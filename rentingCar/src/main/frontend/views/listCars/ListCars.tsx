@@ -11,7 +11,7 @@ export const config: ViewConfig = {
   title: 'Book a car',
 };
 
-export default function ListCars() {
+export default function ListCarsView() {
   const navigate = useNavigate();
   const location = useLocation();
   const { isAdmin } = useContext(AuthContext);

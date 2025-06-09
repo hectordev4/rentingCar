@@ -11,6 +11,7 @@ import MainLayout from './views/@layout';
 //View Imports
 import HomeView from './views/@index';
 import LoginView from './views/login';
+import ListCarsView from './views/listCars/ListCars';
 import BookingsView from './views/bookings';
 
 //Helper function to wrap elements with providers
@@ -30,6 +31,7 @@ const router = createBrowserRouter([
   {
     element: withProviders(<MainLayout />),
     children: [
+        {path: '/listCars', element: <ListCarsView />},
       { path: '/bookings', element: <BookingsView /> },
     ],
   },
