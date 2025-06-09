@@ -89,4 +89,20 @@ public class DelegationRepositoryImpl implements DelegationRepository {
         table.scan(ScanEnhancedRequest.builder().build()).items().forEach(items::add);
         return items;
     }
+
+    @Override
+    public void saveCalendar(Calendar calendar) {
+        DynamoDbTable<Calendar> table = enhancedClient.table(tableName, TableSchema.fromBean(Calendar.class));
+        table.putItem(calendar);
+    }
+
+    @Override
+    public Calendar getCalendar(String delegationId, String operation) {
+        DynamoDbTable<Calendar> table = enhancedClient.table(tableName, TableSchema.fromBean(Calendar.class));
+        Key key = Key.builder()
+                .partitionValue(delegationId)
+                .sortValue(operation)
+                .build();
+        return table.getItem(key);
+    }
 }

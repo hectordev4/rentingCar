@@ -15,4 +15,9 @@ public interface DelegationRepository {
     List<Delegation> listAllDelegations();
 
     <T> List<T> listAllItems(Class<T> clazz);
+
+
+    void saveCalendar(Calendar calendar);
+
+    Calendar getCalendar(String delegationId, String operation);
 }

@@ -3,7 +3,6 @@ package dev.renting.delegations;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbSortKey;
-import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbFlatten;
 
 import java.util.Map;
 
@@ -29,7 +28,7 @@ public class Calendar {
         this.operation = operation;
     }
 
-    @DynamoDbFlatten
+
     public Map<String, Boolean> getDates() {
         return dates;
     }
