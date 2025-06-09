@@ -41,6 +41,8 @@ export default function HomeView() {
       alert('Please select a delegation and at least one date.');
       return;
     }
+    console.log('Selected delegation:', selectedDelegation);
+    console.log('Selected dates:', selectedDates);
 
     try {
       const cars = await fetchAvailableCars(
@@ -48,7 +50,13 @@ export default function HomeView() {
         selectedDates
       );
       console.log('Available cars:', cars);
-      navigate('/listCars');
+      navigate('/listCars', {
+        state: {
+          delegationId: selectedDelegation.delegationId,
+          startDate: selectedDates[0],
+          endDate: selectedDates[selectedDates.length - 1],
+        },
+      });
     } catch (error) {
       console.error('Failed to load available cars:', error);
       alert('Failed to load available cars. Please try again.');
@@ -57,7 +65,7 @@ export default function HomeView() {
 
   return (
     <div className="homeView">
-      <img className="background" style={{ width: '100vw' }} src="images/trailRoad.svg" alt="Background" />
+
         <div className="homeHeader">
             <ThemeToggleButtons />
             <AuthControls />
@@ -83,6 +91,7 @@ export default function HomeView() {
           </button>
         </div>
       </div>
+      <img className="background" style={{ width: '100vw' }} src="images/trailRoad.svg" alt="Background" />
     </div>
   );
 }

@@ -1,22 +1,22 @@
-import { useState, FormEvent } from 'react';
+import { useContext, useState, FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { signIn } from '../middleware/AuthService';
+import { AuthContext } from '../contexts/AuthContext';
 
 export default function LoginView(): JSX.Element {
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [error, setError] = useState<string>('');
   const navigate = useNavigate();
+  const { login } = useContext(AuthContext);
 
   const handleLogin = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    try {
-      await signIn(username, password);
-      navigate('/home');
-    } catch (err) {
-      setError('Login failed. Please check your credentials.');
-      console.error(err);
-    }
+      e.preventDefault();
+      try {
+        await login(username, password);
+      } catch (err) {
+        setError('Login failed. Please check your credentials.');
+        console.error(err);
+      }
   };
 
   return (

@@ -37,16 +37,17 @@ useEffect(() => {
           let current = new Date(start);
           const last = new Date(end);
           while (current <= last) {
+            const yy = String(current.getFullYear()).slice(-2);
             const mm = String(current.getMonth() + 1).padStart(2, '0');
             const dd = String(current.getDate()).padStart(2, '0');
-            dates.push(`${mm}-${dd}`);
+            dates.push(`${yy}-${mm}-${dd}`);
             current.setDate(current.getDate() + 1);
           }
           return dates;
         };
         const selectedDates = getDatesArray(startDate, endDate);
         result = await fetchAvailableCars(delegationId, selectedDates);
-      } // <-- This closing brace was missing
+      }
       setCars(
         (result ?? []).filter(
           (car): car is Car => !!car
