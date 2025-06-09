@@ -91,14 +91,32 @@ useEffect(() => {
   if (cars.length === 0) {
     return <div>No cars available.</div>;
   }
-  function isValidCar(car: Car): car is Car & { manufacturer: string; model: string; delegationId: string; year: number } {
-    return (
-      typeof car.manufacturer === 'string' &&
-      typeof car.model === 'string' &&
-      typeof car.delegationId === 'string' &&
-      typeof car.year === 'number'
-    );
+function isValidCar(
+  car: Car
+): car is Car & {
+  delegationId: string;
+  operation: string;
+  manufacturer: string;
+  model: string;
+  numberPlate?: string;
+  year: number;
+  color: string;
+  price: number;
+} {
+  const hasBase =
+    typeof car.manufacturer === 'string' &&
+    typeof car.model === 'string' &&
+    typeof car.delegationId === 'string' &&
+    typeof car.year === 'number' &&
+    typeof car.color === 'string' &&
+    typeof car.price === 'number' &&
+    typeof car.operation === 'string';
+
+  if (isAdmin) {
+    return hasBase && typeof car.numberPlate === 'string';
   }
+  return hasBase;
+}
 
 
   return (

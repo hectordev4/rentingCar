@@ -4,13 +4,12 @@ import { Button } from '@vaadin/react-components/Button';
 type Car = {
   delegationId: string;
   operation: string;
-  manufacturer?: string;
-  model?: string;
+  manufacturer: string;
+  model: string;
   numberPlate?: string;
-  year?: number;
-  color?: string;
-  price?: number;
-  rented?: boolean;
+  year: number;
+  color: string;
+  price: number;
 };
 
 interface CarCardProps {
@@ -22,8 +21,6 @@ interface CarCardProps {
 }
 
 const CarCard: React.FC<CarCardProps> = ({ car, isAdmin, onBook, onEdit, onDelete }) => {
-  if (!car.manufacturer || !car.model) return null;
-
   return (
     <div
       style={{
@@ -60,11 +57,15 @@ const CarCard: React.FC<CarCardProps> = ({ car, isAdmin, onBook, onEdit, onDelet
         Color: <strong>{car.color}</strong>
       </div>
       <div style={{ marginBottom: '0.5rem', color: '#555' }}>
-        Price: <strong>{car.price} €</strong>
+        Price: <strong>{car.price !== undefined ? `${car.price} €` : 'N/A'}</strong>
       </div>
-      <div style={{ marginBottom: '1rem', color: car.rented ? '#d33' : '#090' }}>
-        {car.rented ? 'Rented' : 'Available'}
-      </div>
+      {isAdmin && (
+        <>
+          <div style={{ marginBottom: '0.5rem', color: '#555' }}>
+            Number Plate: <strong>{car.numberPlate ?? 'N/A'}</strong>
+          </div>
+        </>
+      )}
       {isAdmin ? (
         <>
           <Button theme="secondary" style={{ marginBottom: '0.5rem', width: '100%' }} onClick={() => onEdit(car)}>
@@ -77,7 +78,6 @@ const CarCard: React.FC<CarCardProps> = ({ car, isAdmin, onBook, onEdit, onDelet
       ) : (
         <Button
           theme="primary"
-          disabled={car.rented}
           onClick={() => onBook(car)}
           style={{ width: '100%' }}
         >

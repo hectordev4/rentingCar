@@ -198,10 +198,32 @@ html[theme~="party-mode"] button {
   }
 }
 
-
+.homeView {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    background-color: var(--lumo-base-color);
+    color: var(--lumo-body-text-color);
+}
+.homeHeader {
+    display: flex;
+    width: 100%;
+    height: 80px;
+    padding: 0 20px;
+    justify-content: right;
+    align-items: center;
+    background-color: var(--lumo-base-color);
+    color: var(--lumo-body-text-color);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
 .background{
-    zIndex: -1;
-    display: contents;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
     width: 100%;
     height: auto;
 }
@@ -316,10 +338,15 @@ html[theme~="party-mode"] button {
 
 .toggleDarkLight{
     display: flex;
-    background: url(../icons/sun.svg);
-    background-size: cover;
     width: 20px;
     height: 20px;
     border-radius: 50%;
-
+}
+.toggleDarkLight.light {
+  background: url(../icons/sun.svg);
+  background-size: cover;
+}
+.toggleDarkLight.dark {
+  background: url(../icons/moon.svg);
+  background-size: cover;
 }

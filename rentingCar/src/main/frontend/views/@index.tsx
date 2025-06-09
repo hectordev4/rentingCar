@@ -7,6 +7,8 @@ import { useDateContext } from 'Frontend/contexts/DateContext';
 import Delegation from 'Frontend/generated/dev/renting/delegations/Delegation';
 import DelegationSelector from 'Frontend/components/DelegationSelector';
 import { fetchAvailableCars } from 'Frontend/middleware/DelegationEndpoint';
+import ThemeToggleButtons from 'Frontend/components/ThemeToggleButtons';
+import AuthControls from 'Frontend/components/AuthControls';
 
 
 export const config = {
@@ -54,8 +56,12 @@ export default function HomeView() {
   };
 
   return (
-    <>
+    <div className="homeView">
       <img className="background" style={{ width: '100vw' }} src="images/trailRoad.svg" alt="Background" />
+        <div className="homeHeader">
+            <ThemeToggleButtons />
+            <AuthControls />
+        </div>
       <div className="homeDivTop">
         <img className="homeDivTop" style={{ width: '800px' }} src="icons/Logo.svg" alt="Logo" />
       </div>
@@ -77,6 +83,6 @@ export default function HomeView() {
           </button>
         </div>
       </div>
-    </>
+    </div>
   );
 }

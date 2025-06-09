@@ -20,7 +20,10 @@ export default function ThemeToggleButtons() {
 
   return (
     <>
-      <button className="toggleDarkLight" onClick={() => setDarkMode((prev) => !prev)} />
+      <button
+        className={`toggleDarkLight${!darkMode && !partyMode ? ' light' : ''}`}
+        onClick={() => setDarkMode((prev) => !prev)}
+      />
       <button className="toggleParty" onClick={() => setPartyMode((prev) => !prev)} />
     </>
   );
