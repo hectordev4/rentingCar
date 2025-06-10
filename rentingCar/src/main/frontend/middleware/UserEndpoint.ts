@@ -13,6 +13,12 @@ export async function getBookingsByUser(userId: string): Promise<Booking[]> {
   return (result ?? []).filter((b): b is Booking => !!b);
 }
 
+// Get all bookings (for admin)
+export async function getAllBookings(): Promise<Booking[]> {
+  const result = await UserEndpoint.getAllBookings();
+  return (result ?? []).filter((b): b is Booking => !!b);
+}
+
 // Get the current user's ID
 export async function getUserById(userId: string): Promise<User | null> {
   try {

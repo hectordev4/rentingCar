@@ -9,6 +9,8 @@ public interface UserRepository {
 
     List<Booking> findBookingsByUserId(String userId);
 
+    List<Booking> findAllBookings();
+
     Optional<User> findById(String userId);
 
 }

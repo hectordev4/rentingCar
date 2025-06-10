@@ -55,6 +55,20 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
+    public List<Booking> findAllBookings() {
+        DynamoDbTable<Booking> table = enhancedClient.table(tableName, TableSchema.fromBean(Booking.class));
+        List<Booking> bookings = new ArrayList<>();
+        Iterator<Booking> results = table.scan().items().iterator();
+        results.forEachRemaining(booking -> {
+            String operation = booking != null ? booking.getOperation() : null;
+            if (operation != null && !"profile".equalsIgnoreCase(operation)) {
+                bookings.add(booking);
+            }
+        });
+        return bookings;
+    }
+
+    @Override
     public Optional<User> findById(String userId) {
         DynamoDbTable<User> table = enhancedClient.table(tableName, TableSchema.fromBean(User.class));
         User user = table.getItem(Key.builder().partitionValue(userId).build());

@@ -39,4 +39,8 @@ public class UserEndpoint {
         return userRepository.findBookingsByUserId(userId);
     }
 
+    //Get all bookings
+    public List<Booking> getAllBookings() {
+        return userRepository.findAllBookings();
+    }
 }

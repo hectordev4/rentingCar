@@ -1,6 +1,6 @@
 import { ViewConfig } from '@vaadin/hilla-file-router/types.js';
 import { useEffect, useState, useContext } from 'react';
-import { UserEndpoint } from 'Frontend/generated/endpoints';
+import { getAllBookings, getBookingsByUser } from 'Frontend/middleware/UserEndpoint';
 import { Grid } from '@vaadin/react-components/Grid';
 import { GridColumn } from '@vaadin/react-components/GridColumn';
 import { AuthContext } from 'Frontend/contexts/AuthContext';
@@ -13,17 +13,28 @@ export const config: ViewConfig = {
 export default function BookingsView() {
   const [bookings, setBookings] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const { isAdmin } = useContext(AuthContext);
+  const { isAdmin, userId } = useContext(AuthContext);
 
   useEffect(() => {
-    UserEndpoint.getBookingsByUser('USER#001')
-      .then((result) => setBookings(result ?? []))
-      .catch((err) => {
+    setLoading(true);
+    const fetchBookings = async () => {
+      try {
+        let result: any[] = [];
+        if (isAdmin) {
+          result = await getAllBookings();
+        } else if (userId) {
+          result = await getBookingsByUser(userId);
+        }
+        setBookings(result);
+      } catch (err) {
         console.error('Failed to fetch bookings:', err);
         setBookings([]);
-      })
-      .finally(() => setLoading(false));
-  }, []);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchBookings();
+  }, [isAdmin, userId]);
 
   if (loading) return <div>Loading bookings...</div>;
   if (bookings.length === 0) return <div>No bookings found.</div>;
@@ -31,14 +42,16 @@ export default function BookingsView() {
   return (
     <div>
       <div className="space-y-m">
-        <p>Bookings for USER#001</p>
+        <p>
+          {isAdmin ? 'All bookings' : `Bookings for ${userId}`}
+        </p>
       </div>
       <Grid items={bookings}>
-        {isAdmin && <GridColumn path="operation" header="Booking ID" />}
+        <GridColumn path="operation" header="Booking ID" />
         <GridColumn
           header="Car"
           renderer={({ item }) =>
-            `${item.car?.make ?? ''} ${item.car?.model ?? ''}`
+            `${item.car?.manufacturer ?? ''} ${item.car?.model ?? ''}`
           }
         />
         <GridColumn path="startDate" header="Start Date" />
