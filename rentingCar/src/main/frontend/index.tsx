@@ -4,8 +4,9 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import './vaadin-hmr-fix';
 import 'Frontend/themes/carrenting/styles.css';
 //Provider Imports
-import { DateContextProvider } from 'Frontend/contexts/DateContext';
 import { AuthProvider } from 'Frontend/contexts/AuthContext';
+import { DateContextProvider } from 'Frontend/contexts/DateContext';
+import { DelegationProvider } from 'Frontend/contexts/DelegationContext';
 //Layout Imports
 import MainLayout from './views/@layout';
 //View Imports
@@ -18,9 +19,11 @@ import CreateBookingView from './views/create/bookings';
 //Helper function to wrap elements with providers
 const withProviders = (element: React.ReactNode) => (
   <AuthProvider>
-    <DateContextProvider>
-      {element}
-    </DateContextProvider>
+    <DelegationProvider>
+      <DateContextProvider>
+        {element}
+      </DateContextProvider>
+    </DelegationProvider>
   </AuthProvider>
 );
 

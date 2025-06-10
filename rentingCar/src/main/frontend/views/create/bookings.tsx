@@ -5,12 +5,14 @@ import Booking from 'Frontend/generated/dev/renting/users/Booking';
 import { saveBooking } from 'Frontend/middleware/UserEndpoint';
 import { AuthContext } from 'Frontend/contexts/AuthContext';
 import { useDateContext } from 'Frontend/contexts/DateContext';
+import { useDelegationContext } from 'Frontend/contexts/DelegationContext';
 
 export default function CreateBookingView() {
   const location = useLocation();
   const navigate = useNavigate();
   const { isLoggedIn, userId } = useContext(AuthContext);
   const { startDate, endDate } = useDateContext();
+  const { selectedDelegation } = useDelegationContext();
   const car = location.state?.car;
 
   const bookingStartDate = startDate ?? location.state?.startDate ?? '';
@@ -30,7 +32,7 @@ export default function CreateBookingView() {
 
   const booking: Booking = {
     userId,
-    operation: location.pathname.split('/').pop() ?? '',
+    operation: `booking#${location.pathname.split('/').pop() ?? ''}`,
     car,
     status: "ACTIVE",
     startDate: bookingStartDate,
@@ -38,7 +40,7 @@ export default function CreateBookingView() {
     totalToPayment: car.price ?? 0,
     statusPayment: "PENDING",
     statusBooking: "CREATED",
-    pickUpDelegation: car.pickUpDelegation ?? null,
+    pickUpDelegation: selectedDelegation ?? undefined,
     deliverDelegation: car.deliverDelegation ?? null,
   };
 

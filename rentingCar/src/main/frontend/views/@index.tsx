@@ -9,6 +9,7 @@ import DelegationSelector from 'Frontend/components/DelegationSelector';
 import { fetchAvailableCars } from 'Frontend/middleware/DelegationEndpoint';
 import ThemeToggleButtons from 'Frontend/components/ThemeToggleButtons';
 import AuthControls from 'Frontend/components/AuthControls';
+import { useDelegationContext } from 'Frontend/contexts/DelegationContext';
 
 
 export const config = {
@@ -27,7 +28,7 @@ export default function HomeView() {
   const navigate = useNavigate();
 
   const { selectedDates } = useDateContext();
-
+  const { setSelectedDelegation: setDelegationContext } = useDelegationContext();
 
     // Handle delegation selection
   const handleSelect = (delegation: { delegationId: string; operation: string }) => {
