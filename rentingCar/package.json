@@ -25,6 +25,7 @@
     "@vaadin/vaadin-usage-statistics": "2.1.3",
     "construct-style-sheets-polyfill": "3.1.0",
     "date-fns": "2.29.3",
+    "jwt-decode": "^4.0.0",
     "lit": "3.2.1",
     "proj4": "2.15.0",
     "react": "18.3.1",
@@ -126,7 +127,7 @@
       "workbox-core": "7.3.0",
       "workbox-precaching": "7.3.0"
     },
-    "hash": "bd6aefc878c299348c8b970b89ba148b8c543d45b8c3353e6714a2756d91d19d"
+    "hash": "628da978aa15b43b2c3b7637257c1e3668c92f8d72ea8a4a83f8bac8f3df37fd"
   },
   "overrides": {
     "@vaadin/bundles": "$@vaadin/bundles",
@@ -167,6 +168,7 @@
     "@vaadin/vaadin-material-styles": "$@vaadin/vaadin-material-styles",
     "react-router": "$react-router",
     "react-router-dom": "$react-router-dom",
-    "@aws-sdk/client-cognito-identity-provider": "$@aws-sdk/client-cognito-identity-provider"
+    "@aws-sdk/client-cognito-identity-provider": "$@aws-sdk/client-cognito-identity-provider",
+    "jwt-decode": "$jwt-decode"
   }
 }

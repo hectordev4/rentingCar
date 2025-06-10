@@ -13,6 +13,7 @@ import HomeView from './views/@index';
 import LoginView from './views/login';
 import ListCarsView from './views/listCars/ListCars';
 import BookingsView from './views/bookings';
+import CreateBookingView from './views/create/bookings';
 
 //Helper function to wrap elements with providers
 const withProviders = (element: React.ReactNode) => (
@@ -32,7 +33,8 @@ const router = createBrowserRouter([
     element: withProviders(<MainLayout />),
     children: [
       { path: '/listCars', element: <ListCarsView />},
-      { path: '/listCars/bookingCar/:idHashBookingCar', element: <CreateBookingsView /> },
+      { path: '/listCars/bookingCar/:idHashBookingCar', element: <CreateBookingView /> },
+      { path: '/bookings', element: <BookingsView /> },
     ],
   },
 ]);

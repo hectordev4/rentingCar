@@ -5,6 +5,7 @@ import com.vaadin.flow.server.auth.AnonymousAllowed;
 import com.vaadin.hilla.Endpoint;
 import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
+import java.util.Optional;
 
 @Endpoint
 @AnonymousAllowed
@@ -21,6 +22,11 @@ public class UserEndpoint {
     public void saveUser(User user) {
         System.out.println("UserEndpoint.saveUser: " + user);
         userRepository.save(user);
+    }
+
+    // Get User by ID
+    public Optional<User> getUserById(String userId) {
+        return userRepository.findById(userId);
     }
 
     // Save Booking

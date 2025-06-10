@@ -18,17 +18,17 @@ export const DateContextProvider: React.FC<DateContextProviderProps> = ({ childr
   const [startDate, setStartDate] = useState<string | null>(null);
   const [endDate, setEndDate] = useState<string | null>(null);
 
-
+  // Use yyyy-MM-dd format for selectedDates
   const selectedDates = useMemo(() => {
     if (!startDate || !endDate) return [];
     const dates: string[] = [];
     let current = new Date(startDate);
     const last = new Date(endDate);
     while (current <= last) {
-      const yy = String(current.getFullYear()).slice(-2);
+      const yyyy = String(current.getFullYear());
       const mm = String(current.getMonth() + 1).padStart(2, '0');
       const dd = String(current.getDate()).padStart(2, '0');
-      dates.push(`${yy}-${mm}-${dd}`);
+      dates.push(`${yyyy}-${mm}-${dd}`);
       current.setDate(current.getDate() + 1);
     }
     return dates;

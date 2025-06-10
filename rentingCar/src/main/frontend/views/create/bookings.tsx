@@ -1,26 +1,40 @@
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useContext } from 'react';
 import { Button } from '@vaadin/react-components/Button';
 import Booking from 'Frontend/generated/dev/renting/users/Booking';
 import { saveBooking } from 'Frontend/middleware/UserEndpoint';
+import { AuthContext } from 'Frontend/contexts/AuthContext';
+import { useDateContext } from 'Frontend/contexts/DateContext';
 
-export default function BookingsView() {
+export default function CreateBookingView() {
   const location = useLocation();
   const navigate = useNavigate();
+  const { isLoggedIn, userId } = useContext(AuthContext);
+  const { startDate, endDate } = useDateContext();
   const car = location.state?.car;
-  const userId = "USER#001"; // Replace with actual user context if available
+
+  const bookingStartDate = startDate ?? location.state?.startDate ?? '';
+  const bookingEndDate = endDate ?? location.state?.endDate ?? '';
+
+  if (!isLoggedIn) {
+    return <div>Please log in to create a booking.</div>;
+  }
 
   if (!car) {
     return <div>No car selected for booking.</div>;
   }
 
-  // Prepare booking object (add more fields as needed)
+  if (!userId) {
+    return <div>Could not determine user ID.</div>;
+  }
+
   const booking: Booking = {
     userId,
-    operation: location.pathname.split('/').pop() ?? '', // idHashBookingCar
+    operation: location.pathname.split('/').pop() ?? '',
     car,
     status: "ACTIVE",
-    startDate: location.state?.startDate ?? '',
-    endDate: location.state?.endDate ?? '',
+    startDate: bookingStartDate,
+    endDate: bookingEndDate,
     totalToPayment: car.price ?? 0,
     statusPayment: "PENDING",
     statusBooking: "CREATED",
