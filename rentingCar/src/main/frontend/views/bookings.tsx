@@ -54,6 +54,10 @@ export default function BookingsView() {
             `${item.car?.manufacturer ?? ''} ${item.car?.model ?? ''}`
           }
         />
+        <GridColumn
+          header="Number Plate"
+          renderer={({ item }) => item.car?.numberPlate ?? ''}
+        />
         <GridColumn path="startDate" header="Start Date" />
         <GridColumn path="endDate" header="End Date" />
         <GridColumn

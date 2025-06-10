@@ -94,4 +94,21 @@ public class DelegationEndpoint {
         System.out.println("Available cars to return: " + availableCars);
         return availableCars;
     }
+
+    // Getter and Setter for Calendar dates to false for the booking
+    public void markCarDatesUnavailable(String delegationId, int year, String numberPlate, List<String> bookedDates) {
+        // Build the sort key for the car's calendar
+        String sortKey = String.format("car#%d#%s#calendar", year, numberPlate);
+        Calendar calendar = delegationRepository.getCalendar(delegationId, sortKey);
+
+        if (calendar != null && calendar.getDates() != null) {
+            for (String date : bookedDates) {
+                calendar.getDates().put(date, false);
+            }
+            delegationRepository.saveCalendar(calendar);
+        } else {
+            // Optionally handle the case where the calendar does not exist
+            System.out.println("Calendar not found for car: " + numberPlate);
+        }
+    }
 }

@@ -13,6 +13,11 @@ export async function saveDelegation(delegation: Delegation): Promise<void> {
   return DelegationEndpoint.saveDelegation(delegation);
 }
 
+// Get a delegation by ID
+export async function fetchDelegationById(delegationId: string) {
+  return DelegationEndpoint.getDelegation(delegationId, "profile");
+}
+
 // Fetch all cars for admin view
 export async function fetchAllCars(): Promise<Car[]> {
   const result = await DelegationEndpoint.getAllCars();
@@ -44,4 +49,19 @@ export async function generateBookingHash(data: {
   );
   const hashArray = Array.from(new Uint8Array(hashBuffer));
   return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+// Mark car dates as unavailable in the calendar when a booking is made
+export async function markCarDatesUnavailable(
+  delegationId: string,
+  year: number,
+  numberPlate: string,
+  bookedDates: string[]
+): Promise<void> {
+  return DelegationEndpoint.markCarDatesUnavailable(
+    delegationId,
+    year,
+    numberPlate,
+    bookedDates
+  );
 }
