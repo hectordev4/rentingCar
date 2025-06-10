@@ -1,80 +1,54 @@
-import { ViewConfig } from '@vaadin/hilla-file-router/types.js';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '@vaadin/react-components/Button';
 import Booking from 'Frontend/generated/dev/renting/users/Booking';
 import { saveBooking } from 'Frontend/middleware/UserEndpoint';
 
-export const config: ViewConfig = {
-  menu: {
-    title: '\u2003Create Booking',
-    order: 4,
-  },
-};
-
-const sampleBooking: Booking = {
-  userId: "USER#001",
-  operation: "booking#2025#001",
-  car: {
-    delegationId: "DELEG#001",
-    operation: "car#2025#001",
-    manufacturer: "Toyota",
-    model: "Camry",
-    numberPlate: "ABC-1234",
-    year: 2025,
-    color: "Blue",
-    price: 40000,
-  },
-  status: "ACTIVE",
-  startDate: "2025-10-01",
-  endDate: "2025-10-07",
-  totalToPayment: 456.56,
-  statusPayment: "PAID",
-  statusBooking: "CREATED",
-  pickUpDelegation: {
-    delegationId: "DELEG#001",
-    operation: "profile",
-    name: "Barcelona Central",
-    address: "Carrer de la Marina, 15",
-    city: "Barcelona",
-    availableCarQty: 12,
-    phone: "+34 931 234 567",
-    email: "central@renting.com"
-  },
-  deliverDelegation: {
-    delegationId: "DELEG#001",
-    operation: "profile",
-    name: "Barcelona Central",
-    address: "Carrer de la Marina, 15",
-    city: "Barcelona",
-    availableCarQty: 12,
-    phone: "+34 931 234 567",
-    email: "central@renting.com"
-  }
-};
-
 export default function BookingsView() {
-  const handleSaveBooking = async () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const car = location.state?.car;
+  const userId = "USER#001"; // Replace with actual user context if available
+
+  if (!car) {
+    return <div>No car selected for booking.</div>;
+  }
+
+  // Prepare booking object (add more fields as needed)
+  const booking: Booking = {
+    userId,
+    operation: location.pathname.split('/').pop() ?? '', // idHashBookingCar
+    car,
+    status: "ACTIVE",
+    startDate: location.state?.startDate ?? '',
+    endDate: location.state?.endDate ?? '',
+    totalToPayment: car.price ?? 0,
+    statusPayment: "PENDING",
+    statusBooking: "CREATED",
+    pickUpDelegation: car.pickUpDelegation ?? null,
+    deliverDelegation: car.deliverDelegation ?? null,
+  };
+
+  const handleConfirmBooking = async () => {
     try {
-      await saveBooking(sampleBooking);
-      alert('Booking saved successfully!');
+      await saveBooking(booking);
+      alert('Booking created!');
+      navigate('/listCars');
     } catch (error) {
-      console.error('Error saving booking:', error);
-      alert('Failed to save booking');
+      alert('Failed to create booking');
     }
   };
 
   return (
     <div className="flex flex-col h-full items-center justify-center p-l text-center box-border">
-      <img style={{ width: '200px' }} src="images/empty-plant.png" alt="Empty" />
-      <h2>Booking Management</h2>
+      <h2>Confirm Your Booking</h2>
       <div className="card p-m">
         <pre className="text-left">
-          {JSON.stringify(sampleBooking, null, 2)}
+          {JSON.stringify(booking, null, 2)}
         </pre>
-        <Button onClick={handleSaveBooking}>
-          Save Booking
+        <Button onClick={handleConfirmBooking}>
+          Confirm Booking
         </Button>
       </div>
-      <p>Manage user bookings and dates</p>
     </div>
   );
 }

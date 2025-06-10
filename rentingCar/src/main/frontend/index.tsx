@@ -31,8 +31,8 @@ const router = createBrowserRouter([
   {
     element: withProviders(<MainLayout />),
     children: [
-        {path: '/listCars', element: <ListCarsView />},
-      { path: '/bookings', element: <BookingsView /> },
+      { path: '/listCars', element: <ListCarsView />},
+      { path: '/listCars/bookingCar/:idHashBookingCar', element: <CreateBookingsView /> },
     ],
   },
 ]);

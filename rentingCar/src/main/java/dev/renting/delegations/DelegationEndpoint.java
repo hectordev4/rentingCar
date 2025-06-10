@@ -62,24 +62,36 @@ public class DelegationEndpoint {
 
     // Get available cars by delegationId and date
     public List<Car> getAvailableCars(String delegationId, List<String> dates) {
+        System.out.println("getAvailableCars called with delegationId: " + delegationId + ", dates: " + dates);
+
         List<Car> cars = delegationRepository.listByPartitionKey(delegationId, Car.class);
+        System.out.println("Cars fetched from DB: " + cars);
+
         List<Car> availableCars = new ArrayList<>();
         for (Car car : cars) {
+            System.out.println("Checking car: " + car);
+
             String sortKey = String.format("car#%d#%s#calendar", car.getYear(), car.getNumberPlate());
-            Calendar calendar = delegationRepository.getCalendar(delegationId, sortKey); // Use explicit method
+            Calendar calendar = delegationRepository.getCalendar(delegationId, sortKey);
+            System.out.println("Calendar for car " + car.getNumberPlate() + ": " + (calendar != null ? calendar.getDates() : "null"));
+
             if (calendar != null && calendar.getDates() != null) {
                 boolean allAvailable = true;
                 for (String dateStr : dates) {
-                    if (!Boolean.TRUE.equals(calendar.getDates().get(dateStr))) {
+                    Boolean available = calendar.getDates().get(dateStr);
+                    System.out.println("Date: " + dateStr + ", available: " + available);
+                    if (!Boolean.TRUE.equals(available)) {
                         allAvailable = false;
                         break;
                     }
                 }
                 if (allAvailable) {
+                    System.out.println("Car " + car.getNumberPlate() + " is available for all dates.");
                     availableCars.add(car);
                 }
             }
         }
+        System.out.println("Available cars to return: " + availableCars);
         return availableCars;
     }
 }

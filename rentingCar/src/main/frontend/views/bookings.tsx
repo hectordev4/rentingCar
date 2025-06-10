@@ -1,8 +1,9 @@
 import { ViewConfig } from '@vaadin/hilla-file-router/types.js';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import { UserEndpoint } from 'Frontend/generated/endpoints';
 import { Grid } from '@vaadin/react-components/Grid';
 import { GridColumn } from '@vaadin/react-components/GridColumn';
+import { AuthContext } from 'Frontend/contexts/AuthContext';
 
 export const config: ViewConfig = {
   menu: { order: 7, icon: 'line-awesome/svg/calendar-solid.svg' },
@@ -12,6 +13,7 @@ export const config: ViewConfig = {
 export default function BookingsView() {
   const [bookings, setBookings] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const { isAdmin } = useContext(AuthContext);
 
   useEffect(() => {
     UserEndpoint.getBookingsByUser('USER#001')
@@ -28,11 +30,11 @@ export default function BookingsView() {
 
   return (
     <div>
-        <div className="space-y-m">
-            <p>Bookings for USER#001</p>
-        </div>
+      <div className="space-y-m">
+        <p>Bookings for USER#001</p>
+      </div>
       <Grid items={bookings}>
-        <GridColumn path="operation" header="Booking ID" />
+        {isAdmin && <GridColumn path="operation" header="Booking ID" />}
         <GridColumn
           header="Car"
           renderer={({ item }) =>

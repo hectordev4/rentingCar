@@ -41,8 +41,6 @@ export default function HomeView() {
       alert('Please select a delegation and at least one date.');
       return;
     }
-    console.log('Selected delegation:', selectedDelegation);
-    console.log('Selected dates:', selectedDates);
 
     try {
       const cars = await fetchAvailableCars(

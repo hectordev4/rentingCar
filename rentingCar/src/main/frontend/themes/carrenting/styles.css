@@ -214,6 +214,7 @@ html[theme~="party-mode"] button {
     height: 50px;
     top: 0;
     padding: 0px 20px;
+    gap: 20px;
     justify-content: right;
     align-items: center;
     background-color: var(--lumo-base-color);
@@ -269,24 +270,21 @@ html[theme~="party-mode"] button {
     flex-shrink: 0;
 }
 .homeDivBottom{
+
+}
+
+.homeDivSubBottom{
     display: flex;
     width: 1400px;
     height: auto;
     padding: 78px 70px;
-    flex-direction: column;
+    flex-direction: row;
     justify-content: space-between;
     align-items: center;
     flex-shrink: 0;
     border-radius: 100px;
     background: linear-gradient(339deg, rgba(255, 255, 255, 0.50) 13.04%, rgba(153, 153, 153, 0.00) 66.34%);
     box-shadow: 2px 4px 4px 0px rgba(0, 0, 0, 0.50);
-}
-
-.homeDivSubBottom{
-    display: flex;
-    align-items: center;
-    gap: 180px;
-
 }
 
 .homeDelegation{

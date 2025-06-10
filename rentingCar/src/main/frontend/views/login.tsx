@@ -1,6 +1,11 @@
 import { useContext, useState, FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../contexts/AuthContext';
+import { ViewConfig } from '@vaadin/hilla-file-router/types.js';
+
+export const config: ViewConfig = {
+  title: 'Login',
+};
 
 export default function LoginView(): JSX.Element {
   const [username, setUsername] = useState<string>('');
